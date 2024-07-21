@@ -8,7 +8,9 @@ app = "gamestore-unique123-lingering-pine-4132"
 [[services]]
 internal_port = 80
 external_port = 80
+processes = ["app"]
 protocol = "tcp"
+script_checks = []
 
 [services.concurrency]
 type = "requests"
@@ -18,3 +20,7 @@ hard_limit = 50
 [[services.ports]]
 port = 80
 handlers = ["http"]
+
+[http_service]
+internal_port = 80
+force_https = true

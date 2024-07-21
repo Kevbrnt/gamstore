@@ -1,20 +1,13 @@
-FROM php:8.1-apache
+FROM node:14
 
-# Force update and install system dependencies
-RUN apt-get update && apt-get install -y libpq-dev postgresql-client
+WORKDIR /app
 
-# Install PHP extensions
-RUN docker-php-ext-install pdo pdo_mysql
-RUN docker-php-ext-install pdo_pgsql
+COPY package*.json ./
 
-# Enable Apache modules
-RUN a2enmod rewrite
+RUN npm install
 
-# Copy application files
-COPY . /var/www/html/
+COPY . .
 
-# Set permissions
-RUN chown -R www-data:www-data /var/www/html
+EXPOSE 80
 
-# Add ServerName
-RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
+CMD ["npm", "start"]
