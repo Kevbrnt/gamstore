@@ -1,5 +1,8 @@
-app = "gamestore-unique123-lingering-pine-4132"
+app = "gamestore"
 
+[build]
+  builder = "paketobuildpacks/builder:base"
+  
 [env]
 
 [[services]]
