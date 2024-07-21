@@ -2,6 +2,9 @@ FROM php:8.1-apache
 
 # Installer les extensions PHP nécessaires
 RUN docker-php-ext-install pdo pdo_mysql
+# Installer les dépendances et extensions nécessaires
+RUN apt-get update && apt-get install -y libpq-dev \
+    && docker-php-ext-install pdo pdo_pgsql
 
 # Activer le module de réécriture d'Apache
 RUN a2enmod rewrite
