@@ -30,8 +30,11 @@ WORKDIR /var/www/html
 # Copier les fichiers du projet
 COPY . /var/www/html
 
+# Permettre à Composer de s'exécuter en tant que superutilisateur
+ENV COMPOSER_ALLOW_SUPERUSER=1
+
 # Installer les dépendances du projet
-RUN composer install --no-dev --optimize-autoloader
+RUN composer install --no-dev --optimize-autoloader --no-interaction
 
 # Générer la clé d'application
 RUN php artisan key:generate
