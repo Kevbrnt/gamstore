@@ -2,7 +2,7 @@
 
 ## Description du Projet
 
-GGameStore est une application web de vente de jeux vidéo développée dans le cadre d'un projet d'étude. Elle offre une plateforme complète pour la gestion d'un magasin de jeux vidéo en ligne, incluant des fonctionnalités pour les clients, les employés et les administrateurs.
+GameStore est une application web de vente de jeux vidéo développée dans le cadre d'un projet d'étude. Elle offre une plateforme complète pour la gestion d'un magasin de jeux vidéo en ligne, incluant des fonctionnalités pour les clients, les employés et les administrateurs.
 
 ## Table des Matières
 
@@ -27,16 +27,16 @@ GGameStore est une application web de vente de jeux vidéo développée dans le 
 ## Installation
 
 1. Clonez le dépôt :
-ggit clone http://github.com/Kevbrnt/gamstore/master
-ccd gamestore
-Ccopy
+git clone http://github.com/Kevbrnt/gamstore/master
+cd gamestore
+copy
 2. Installez les dépendances avec Composer :
-ccomposer install
-Ccopy
+composer install
+copy
 3. Importez la base de données :
-mmysql -u KBStudio -p < database/schema.sql
-mmysql -u KBStudio -p < database/data.sql
-Ccopy
+mysql -u KBStudio -p < database/schema.sql
+mysql -u KBStudio -p < database/data.sql
+copy
 4. Configurez MongoDB :
 - Créez une base de données nommée `gamestore`
 - Importez les données initiales si nécessaire
