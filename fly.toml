@@ -1,0 +1,17 @@
+app = "gamestore-unique123-lingering-pine-4132"
+
+[env]
+
+[[services]]
+internal_port = 80
+external_port = 80
+protocol = "tcp"
+
+[services.concurrency]
+type = "requests"
+soft_limit = 25
+hard_limit = 50
+
+[[services.ports]]
+port = 80
+handlers = ["http"]
