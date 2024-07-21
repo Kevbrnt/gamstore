@@ -13,6 +13,8 @@ COPY . /var/www/html
 
 RUN composer install --no-dev --optimize-autoloader
 
+ENV COMPOSER_ALLOW_SUPERUSER=1
+
 RUN chown -R www-data:www-data /var/www/html
 
 EXPOSE 80
