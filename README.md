@@ -52,7 +52,7 @@ Ccopy
 
 1. Démarrez votre serveur web local.
 2. Télécharger xampp et mettez le dossier dans C:\xampp\htdocs\mettre le dossier telecharger ici
-3. Accédez à l'application via : http://localhost:63342/TP/index.php ou ouvrez le fichier start.bat
+3. Accédez à l'application via : http://localhost:63342/TP/index.php
 4. Utilisez les identifiants suivants pour tester les différents rôles :
 - Client : username: Gamestore@Visiteur, password: Gamestore
 - Employé : username: Gamestore@Employés, password: Gamestore
@@ -82,14 +82,19 @@ Copy
 ## Structure du Projet
 TP/
 │
-├── database/          # Fichiers SQL
-├── docs/              # Documentation
-├── public/            # Point d'entrée public
+├── .github/        
+├── asset/              
+├── assets/
+├── CSS/
+├── JS/
+├── Mongodb/
+├── Mysql/
+├── node_modules/
 ├── src/               # Code source PHP
-├── tests/             # Tests unitaires et d'intégration
 ├── vendor/            # Dépendances (géré par Composer)
 ├── .gitignore
 ├── composer.json
+├── fichiers php
 └── README.md
 Copy
 ## Technologies Utilisées
