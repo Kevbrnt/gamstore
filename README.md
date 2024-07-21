@@ -34,25 +34,24 @@ copy
 composer install
 copy
 3. Importez la base de données :
-mysql -u KBStudio -p < database/schema.sql
-mysql -u KBStudio -p < database/data.sql
-copy
-4. Configurez MongoDB :
+données dans les dossiers:
+4. Configurez MySql :
+ - Créer une base de données nommée `gamestoretp`
+ - Importez les données dans le fichier MySql
+
+5. Configurez MongoDB :
 - Créez une base de données nommée `gamestore`
-- Importez les données initiales si nécessaire
+- Importez les données dans le fichier MongoDB
 
 ## Configuration
 
-1. Copiez le fichier de configuration exemple :
-cp config.example.php config.php
-Ccopy
-2. Modifiez `connect_bdd.php` pour MySql et `connect_bdd_mongo.php` pour MongoDB avec vos paramètres de base de données et autres configurations.
+1. copier et Modifiez `connect_bdd.php` pour MySql et `connect_bdd_mongo.php` pour MongoDB avec vos paramètres de base de données et autres configurations.
 
 ## Utilisation
 
 1. Démarrez votre serveur web local.
-2. Télécharger xampp et mettez le dossier dans C:\xampp\htdocs\mettre le dossier telecharger ici
-3. Accédez à l'application via : http://localhost:63342/TP/index.php
+2. Télécharger xampp et mettez le dossier dans C:\xampp\htdocs\
+3. Accédez à l'application via : http://localhost:63342/gamestore-develop/index.php
 4. Utilisez les identifiants suivants pour tester les différents rôles :
 - Client : username: Gamestore@Visiteur, password: Gamestore
 - Employé : username: Gamestore@Employés, password: Gamestore
