@@ -18,8 +18,8 @@ GameStore est une application web de vente de jeux vidéo développée dans le c
 
 ## Prérequis
 
-- PHP 7.4 ou supérieur
-- MySQL 5.7 ou supérieur
+- PHP 8.2 ou supérieur
+- Postgres 16.3
 - MongoDB 4.4 ou supérieur
 - Composer
 - Serveur web (Apache ou Nginx)
