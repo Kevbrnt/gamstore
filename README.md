@@ -29,13 +29,13 @@ GameStore est une application web de vente de jeux vidéo développée dans le c
 1. Clonez le dépôt :
 git clone http://github.com/Kevbrnt/gamstore/master
 cd gamestore
-copy
-2. Installez les dépendances avec Composer :
+
+3. Installez les dépendances avec Composer :
 composer install
-copy
-3. Importez la base de données :
+
+4. Importez la base de données :
 données dans les dossiers:
-4. Configurez MySql :
+5. Configurez MySql :
  - Créer une base de données nommée `gamestoretp`
  - Importez les données dans le fichier MySql
 
@@ -66,18 +66,6 @@ Nous suivons un workflow Git basé sur deux branches principales :
 1. `master` : Branche de production stable
 2. `develop` : Branche de développement
 
-Pour chaque nouvelle fonctionnalité :
-1. Créez une nouvelle branche à partir de `develop` :
-git checkout develop
-git checkout -b feature/nom-de-la-fonctionnalite
-Copy2. Développez et testez votre fonctionnalité
-3. Fusionnez dans `develop` une fois la fonctionnalité terminée :
-git checkout develop
-git merge feature/nom-de-la-fonctionnalite
-Copy4. Une fois `develop` stable, fusionnez dans `main` pour la production :
-git checkout main
-git merge develop
-Copy
 ## Structure du Projet
 TP/
 │
