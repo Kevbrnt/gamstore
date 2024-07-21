@@ -57,8 +57,6 @@ données dans les dossiers:
 - Employé : username: Gamestore@Employés, password: Gamestore
 - Admin : username: Gamestore@Admin, password: Gamestore
 
-Pour plus de détails sur l'utilisation, consultez le manuel d'utilisation dans `docs/manuel_utilisation.pdf`.
-
 ## Workflow Git
 
 Nous suivons un workflow Git basé sur deux branches principales :
