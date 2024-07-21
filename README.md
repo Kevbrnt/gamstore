@@ -14,7 +14,6 @@ GameStore est une application web de vente de jeux vidéo développée dans le c
 6. [Structure du Projet](#structure-du-projet)
 7. [Technologies Utilisées](#technologies-utilisées)
 8. [Auteurs](#auteurs)
-9. [Licence](#licence)
 
 ## Prérequis
 
