@@ -15,9 +15,6 @@ RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
 # Activer le module rewrite d'Apache
 RUN a2enmod rewrite
 
-# Copier les fichiers de l'application
-COPY . /var/www/html
-
 # Définir le répertoire de travail
 WORKDIR /var/www/html
 
@@ -31,3 +28,13 @@ RUN chown -R www-data:www-data /var/www/html \
 EXPOSE 80
 
 CMD ["apache2-foreground"]
+
+
+# Copier les fichiers de l'application
+COPY . /var/www/html
+
+# Configurer le DocumentRoot d'Apache
+ENV APACHE_DOCUMENT_ROOT /var/www/html
+RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf
+RUN sed -ri -e 's!/var/www/!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
+
