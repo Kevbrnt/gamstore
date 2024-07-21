@@ -1,23 +1,20 @@
 FROM php:8.1-apache
 
-# Installer les extensions PHP nécessaires
-RUN docker-php-ext-install pdo pdo_mysql
-# Installer les dépendances et extensions nécessaires
-RUN apt-get update && apt-get install -y libpq-dev 
-RUN docker-php-ext-install pdo pdo_pgsql
+# Force update and install system dependencies
+RUN apt-get update && apt-get install -y libpq-dev postgresql-client
 
-# Activer le module de réécriture d'Apache
+# Install PHP extensions
+RUN docker-php-ext-install pdo pdo_mysql
+RUN docker-php-ext-install pdo_pgsql
+
+# Enable Apache modules
 RUN a2enmod rewrite
 
-# Copier les fichiers du projet
+# Copy application files
 COPY . /var/www/html/
 
-# Configurer les permissions
+# Set permissions
 RUN chown -R www-data:www-data /var/www/html
 
-# Configurer Apache
+# Add ServerName
 RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
-
-EXPOSE 80
-
-CMD ["apache2-foreground"]
