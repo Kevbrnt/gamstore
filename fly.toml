@@ -1,4 +1,4 @@
-app = "gamestore-unique123-lingering-pine-4132""
+app = "gamestore-unique123-lingering-pine-4132"
 
 [build]
   builder = "paketobuildpacks/builder:base"
