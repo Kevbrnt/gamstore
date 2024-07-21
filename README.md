@@ -27,32 +27,33 @@ GGameStore est une application web de vente de jeux vidéo développée dans le 
 ## Installation
 
 1. Clonez le dépôt :
-ggit clone http://github.com/Kevbrnt/gamstore/master
-ccd gamestore
-Ccopy
+git clone http://github.com/Kevbrnt/gamstore/tree/master
+cd gamestore
+copy
 2. Installez les dépendances avec Composer :
-ccomposer install
+composer install
 Ccopy
 3. Importez la base de données :
-mmysql -u KBStudio -p < database/schema.sql
-mmysql -u KBStudio -p < database/data.sql
-Ccopy
-4. Configurez MongoDB :
-- Créez une base de données nommée `gamestore`
+les bases se trouve dans des dossiers :
+_ MySql
+_ MongoDB
+copy
+5. Configurez MongoDB :
 - Importez les données initiales si nécessaire
 
 ## Configuration
 
-1. Copiez le fichier de configuration exemple :
-cp config.example.php config.php
-Ccopy
-2. Modifiez `connect_bdd.php` pour MySql et `connect_bdd_mongo.php` pour MongoDB avec vos paramètres de base de données et autres configurations.
+1. Copiez le fichier de configuration :
+cp connect_bdd.php
+cp connect_bdd_mongodb.php
+copy
+3. Modifiez `connect_bdd.php` pour MySql et `connect_bdd_mongodb.php` pour MongoDB avec vos paramètres de base de données et autres configurations.
 
 ## Utilisation
 
-1. Démarrez votre serveur web local.
+1. Démarrez le serveur web local.
 2. Télécharger xampp et mettez le dossier dans C:\xampp\htdocs\mettre le dossier telecharger ici
-3. Accédez à l'application via : http://localhost:63342/TP/index.php ou ouvrez le fichier start.bat
+3. Accédez à l'application via : http://localhost:63342/TP/index.php ou ouvrez le fichier start.bat dans la racine du dossier
 4. Utilisez les identifiants suivants pour tester les différents rôles :
 - Client : username: Gamestore@Visiteur, password: Gamestore
 - Employé : username: Gamestore@Employés, password: Gamestore
