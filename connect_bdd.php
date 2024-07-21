@@ -4,6 +4,11 @@ $dbname = getenv('DATABASE_NAME');
 $user = getenv('DATABASE_USER');
 $password = getenv('DATABASE_PASSWORD');
 
-$dsn = "pgsql:host=$host;dbname=$dbname;";
-$pdo = new PDO($dsn, $user, $password);
+try {
+    $bdd = new PDO("pgsql:host=$host;dbname=$dbname", $user, $password);
+    $bdd->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    echo "Connexion réussie à la base de données<br>";
+} catch(PDOException $e) {
+    die("Erreur de connexion : " . $e->getMessage());
+}
 ?>
