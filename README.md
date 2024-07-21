@@ -28,7 +28,7 @@ GameStore est une application web de vente de jeux vidéo développée dans le c
 
 1. Clonez le dépôt :
 git clone http://github.com/Kevbrnt/gamstore/master
-cd gamestore
+cd gamstore
 
 3. Installez les dépendances avec Composer :
 composer install
