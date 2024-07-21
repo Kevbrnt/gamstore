@@ -2,6 +2,10 @@
 session_start();
 include 'connect_bdd.php';  // Connexion à la base de données
 
+if (!isset($bdd)) {
+    die("La connexion à la base de données n'a pas été établie.");
+}
+
 // Obtenir les informations de la table retrait
 $sql = "
     SELECT *
