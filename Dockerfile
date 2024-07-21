@@ -1,13 +1,17 @@
 FROM php:8.2-apache
 
+# Installer les dépendances système nécessaires
+RUN apt-get update && apt-get install -y \
+    git \
+    unzip \
+    libzip-dev
+
 # Installer Node.js
 RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash -
 RUN apt-get update && apt-get install -y nodejs
 
 # Installer les extensions PHP nécessaires
-RUN docker-php-ext-install pdo pdo_mysql
-
-# Installer l'extension MongoDB
+RUN docker-php-ext-install pdo pdo_mysql zip
 RUN pecl install mongodb && docker-php-ext-enable mongodb
 
 # Activer le module Apache mod_rewrite

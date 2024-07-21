@@ -1,4 +1,11 @@
 {
+  "name": "gamestore",
+  "version": "1.0.0",
+  "description": "GameStore application",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+},
   "devDependencies": {
     "autoprefixer": "^10.4.19",
     "css-loader": "^7.1.2",
@@ -13,10 +20,7 @@
   },
   "dependencies": {
     "@popperjs/core": "^2.11.8",
-    "bootstrap": "^5.3.3"
-  },
-  "scripts": {
-    "start": "node server.js"
+    "bootstrap": "^5.3.3",
+    "express": "^4.17.1"
   }
 }
-
