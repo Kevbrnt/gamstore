@@ -17,9 +17,8 @@ create table gamestoretp.users
 );
 
 Insert into gamestoretp.users (username, first_name, last_name, email, address, password, add_at, image_url, role)
-Value ('Gamestore@Visiteur', 'John', 'Doe', 'email@email.com', 'Adresse', 'Gamestore', 'NOW()', 'asset/profils/default.png', 'Visiteur');
-Insert into gamestoretp.users (username, first_name, last_name, email, address, password, add_at, image_url, role)
-Value ('Gamestore@Employés', 'Louis', 'Doe', 'email@email.com', 'Adresse', 'Gamestore', 'NOW()', 'asset/profils/default.png', 'Visiteur');
-Insert into gamestoretp.users (username, first_name, last_name, email, address, password, add_at, image_url, role)
-Value ('Gamestore@Admin', 'Marc', 'Doe', 'email@email.com', 'Adresse', 'Gamstore', 'NOW()', 'asset/profils/default.png', 'Visiteur');
+Value 
+    ('Gamestore@Visiteur', 'John', 'Doe', 'email@email.com', 'Adresse', 'Gamestore', 'NOW()', 'asset/profils/default.png', 'Visiteur'),
+    ('Gamestore@Employés', 'Louis', 'Doe', 'email@email.com', 'Adresse', 'Gamestore', 'NOW()', 'asset/profils/default.png', 'Visiteur'),
+    ('Gamestore@Admin', 'Marc', 'Doe', 'email@email.com', 'Adresse', 'Gamstore', 'NOW()', 'asset/profils/default.png', 'Visiteur');
 
