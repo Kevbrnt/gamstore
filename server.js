@@ -1,17 +1,23 @@
 const express = require('express');
-const path = require('path');
 const app = express();
-const PORT = process.env.PORT || 8080;
+const port = process.env.PORT || 8080;
 
-// Configuration pour servir des fichiers statiques
-app.use(express.static(path.join(__dirname, 'public')));
-
-// Exemple de route pour une page d'accueil
+// Route pour la page d'accueil
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'index.php'));
+    res.send('Bienvenue sur GameStore!');
 });
 
-// Lancement du serveur sur toutes les interfaces réseau
-app.listen(PORT, '0.0.0.0', () => {
-    console.log(`Server is running on port ${PORT}`);
+// Route pour gérer les 404
+app.use((req, res, next) => {
+    res.status(404).send("Désolé, cette page n'existe pas!");
+});
+
+app.listen(port, '0.0.0.0', () => {
+    console.log(`Server running on port ${port}`);
+});
+
+app.use(express.static('public'));
+app.use((req, res, next) => {
+    console.log(`Request received: ${req.method} ${req.url}`);
+    next();
 });
