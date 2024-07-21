@@ -6,8 +6,8 @@ app = "gamestore-unique123-lingering-pine-4132"
 [env]
 
 [[services]]
-internal_port = 80
-external_port = 80
+internal_port = 8080
+external_port = 8080
 processes = ["app"]
 protocol = "tcp"
 script_checks = []
@@ -22,5 +22,5 @@ port = 80
 handlers = ["http"]
 
 [http_service]
-internal_port = 80
+internal_port = 8080
 force_https = true
