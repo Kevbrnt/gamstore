@@ -1,8 +1,12 @@
-<?php
+<?php /*
 $host = getenv('192.168.1.176') ?: '192.168.1.176';
 $dbname = getenv('gamestoretp') ?: 'gamestoretp';
 $username = getenv('KBStudio') ?: 'KBStudio';
-$password = getenv('2309') ?: '2309';
+$password = getenv('2309') ?: '2309';*/
+$host = getenv('DATABASE_HOST');
+$dbname = getenv('DATABASE_NAME');
+$username = getenv('DATABASE_USER');
+$password = getenv('DATABASE_PASSWORD');
 
 echo "Tentative de connexion à la base de données...\n";
 echo "Host: $host\n";
