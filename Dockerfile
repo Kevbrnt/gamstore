@@ -6,7 +6,8 @@ RUN apt-get update && apt-get install -y \
     git \
     unzip \
     libzip-dev \
-    libpq-dev  # Ajouter cette ligne pour PostgreSQL
+    libpq-dev  # Ajouter cette ligne pour PostgreSQL \
+     postgresql-client
 
 # Installer Node.js
 RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash -
