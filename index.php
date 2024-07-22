@@ -2,13 +2,13 @@
 session_start();
 require __DIR__ . '/vendor/autoload.php';
 
-$app = require __DIR__ . '/server.js';
+//$app = require __DIR__ . '/server.js';
 
 $request = $_SERVER['REQUEST_URI'];
 
 // Gérer la requête avec Express
-$app->handle($request);
-include 'connect_bdd.php';  // Connexion à la base de données
+//$app->handle($request);
+require 'connect_bdd.php';  // Connexion à la base de données
 
 // Obtenir les informations de la table retrait
 $sql = "

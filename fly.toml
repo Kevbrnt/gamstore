@@ -1,5 +1,11 @@
 app = "gamestore-unique123-lingering-pine-4132"
 
+[env]
+DATABASE_HOST = "gamestoretp.internal"
+DATABASE_NAME = "postgres"
+DATABASE_USER = "postgres"
+DATABASE_PASSWORD = "Uy835kTE3aZxBK2"
+
 [build]
 dockerfile = "Dockerfile"
 
