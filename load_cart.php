@@ -13,8 +13,8 @@ $user_id = $_SESSION['id'];
 
 // Préparez la requête pour récupérer les informations des jeux dans le panier
 $stmt = $pdo->prepare("SELECT cart.id AS cart_id, games.id AS game_id, games.name, games.price, games.promotion_price, games.image_url
-                       FROM cart
-                       JOIN games ON cart.game_id = games.id
+                       FROM gamestoretp.cart
+                       JOIN gamestoretp.games ON cart.game_id = games.id
                        WHERE cart.user_id = :user_id");
 $stmt->execute([':user_id' => $user_id]);
 $items = $stmt->fetchAll(PDO::FETCH_ASSOC);

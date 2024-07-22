@@ -29,7 +29,7 @@
     $user_id = $_SESSION['id'];
 
     // Récupérer les informations de l'utilisateur depuis la base de données
-    $query = "SELECT * FROM users WHERE id = :user_id";
+    $query = "SELECT * FROM gamestoretp.users WHERE id = :user_id";
     $stmt = $pdo->prepare($query);
     $stmt->execute(['user_id' => $user_id]);
 
@@ -52,7 +52,7 @@
         echo "<div class='infoEspace'><h2>Prénom: <p>{$user['first_name']}</p></h2></div>";
         echo "<div class='infoEspace'><h2>Nom: <p>{$user['last_name']}</p></h2></div>";
         echo "<div class='infoEspace'><h2>Adresse : <p>{$user['address']}</p></h2></div>";
-        echo "<div class='infoEspace'><h2>Compte créé : <p>{$user['created_at']}</p></h2></div>";
+        echo "<div class='infoEspace'><h2>Compte créé : <p>{$user['add_at']}</p></h2></div>";
         echo "</div>";
     } else {
         echo "<p>Utilisateur non trouvé.</p>";
@@ -182,7 +182,7 @@
                 <div class="modal-body">
                     <?php
                     // Récupérer les commandes de l'utilisateur depuis la base de données
-                    $query = "SELECT * FROM orders WHERE user_id = :user_id ORDER BY created_at DESC";
+                    $query = "SELECT * FROM gamestoretp.orders WHERE user_id = :user_id ORDER BY created_at DESC";
                     $stmt = $pdo->prepare($query);
                     $stmt->execute(['user_id' => $user_id]);
                     $commandes = $stmt->fetchAll(PDO::FETCH_ASSOC);

@@ -1,15 +1,10 @@
 <?php
 require 'vendor/autoload.php'; // Composer autoload file
 
-use MongoDB\Client as MongoClient;
 
-try {
-// Connexion à MongoDB
-$client = new MongoClient("mongodb://192.168.1.176:27017");
-$database = $client->selectDatabase('gamestore');
-$collection = $database->selectCollection('sales');
-} catch (Exception $e) {
-echo 'Erreur de connexion à MongoDB : ',  $e->getMessage(), "\n";
-exit();
-}
-?>
+$mongoUri = getenv('MONGODB_URI');
+$client = new MongoDB\Client($mongoUri);
+$collection = $client->gamestore->sales;
+
+// Votre code existant pour l'agrégation...
+$result = $collection->aggregate([...]);

@@ -16,7 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['order_id'])) {
     require 'connect_bdd.php';
 
     // Mettez à jour le statut de la commande
-    $stmt = $pdo->prepare("UPDATE orders SET status = 'LIVRE' WHERE id = ?");
+    $stmt = $pdo->prepare("UPDATE gamestoretp.orders SET status = 'LIVRE' WHERE id = ?");
     if ($stmt->execute([$orderId])) {
         echo json_encode(['success' => true]);
     } else {

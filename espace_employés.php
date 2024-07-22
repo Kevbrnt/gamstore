@@ -40,7 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['update_order_status'])
     $new_status = 'LIVRÉ'; // On change le statut à 'LIVRÉ'
 
     // On met à jour le statut de la commande dans la base de données
-    $stmt = $pdo->prepare("UPDATE orders SET status = :new_status WHERE id = :order_id AND status = 'VALIDÉ'");
+    $stmt = $pdo->prepare("UPDATE gamestoretp.orders SET status = :new_status WHERE id = :order_id AND status = 'VALIDÉ'");
     $stmt->execute(['new_status' => $new_status, 'order_id' => $order_id]);
 
     // Vérification du succès de la mise à jour
@@ -51,8 +51,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['update_order_status'])
         // Récupérer les détails de la commande pour mettre à jour MongoDB
         $stmt = $pdo->prepare("
             SELECT games.name, games.price, order_items.quantity
-            FROM order_items
-            JOIN games ON order_items.game_id = games.id
+            FROM gamestoretp.order_items
+            JOIN gamestoretp.games ON order_items.game_id = games.id
             WHERE order_items.order_id = :order_id
         ");
         $stmt->execute(['order_id' => $order_id]);
@@ -92,9 +92,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['update_order_status'])
         SELECT users.first_name, users.last_name, users.email, users.username,
                orders.total_price, orders.date_retrait, orders.retail_id,
                retrait.adresse, retrait.code_postal, retrait.ville
-        FROM orders
-        JOIN users ON orders.user_id = users.id
-        JOIN retrait ON orders.retail_id = retrait.id
+        FROM gamestoretp.orders
+        JOIN gamestoretp.users ON orders.user_id = users.id
+        JOIN gamestoretp.retrait ON orders.retail_id = retrait.id
         WHERE orders.id = :order_id 
     ");
             $stmt->execute(['order_id' => $order_id]);
@@ -158,8 +158,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['update_order_status'])
 // Récupérer les commandes avec le statut 'VALIDÉ' et les informations des clients
 $stmt = $pdo->query("
     SELECT orders.id, orders.created_at, orders.date_retrait, orders.total_price, orders.status, users.first_name, users.last_name
-    FROM orders
-    JOIN users ON orders.user_id = users.id
+    FROM gamestoretp.orders
+    JOIN gamestoretp.users ON orders.user_id = users.id
     WHERE orders.status = 'VALIDÉ'
 ");
 $valid_orders = $stmt->fetchAll();

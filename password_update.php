@@ -7,14 +7,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $hashedPassword = password_hash($newPassword, PASSWORD_BCRYPT);
 
     // Vérifie si l'email existe dans la base de données
-    $stmt = $pdo->prepare("SELECT id FROM users WHERE email = :email");
+    $stmt = $pdo->prepare("SELECT id FROM gamestoretp.users WHERE email = :email");
     $stmt->bindParam(':email', $email);
     $stmt->execute();
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if ($user) {
         // Met à jour le mot de passe pour cet utilisateur
-        $stmt = $pdo->prepare("UPDATE users SET password = :password WHERE email = :email");
+        $stmt = $pdo->prepare("UPDATE gamestoretp.users SET password = :password WHERE email = :email");
         $stmt->execute([':password' => $hashedPassword, ':email' => $email]);
 
         echo json_encode(['success' => true]);

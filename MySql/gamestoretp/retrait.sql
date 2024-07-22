@@ -7,7 +7,7 @@ create table gamestoretp.retrait
     code_postal varchar(100) not null
 );
 
-INSERT INTO retrait (adresse, ville, code_postal) VALUES
+INSERT INTO gamestoretp.retrait (adresse, ville, code_postal) VALUES
                                                       ('Nantes', '5 rue de l\'Arche Sèche', '44000'),
                                                       ('Lille', '271 rue Léon Gambetta', '59000'),
                                                       ('Bordeaux', '12 rue des trois-conils', '33000'),

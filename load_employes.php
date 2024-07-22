@@ -28,7 +28,7 @@ if (
     $email = $_POST['email'];
     $address = $_POST['address'];
     // Vérifier si le username est déjà utilisé
-    $stmt = $pdo->prepare("SELECT COUNT(*) FROM users WHERE username = :username");
+    $stmt = $pdo->prepare("SELECT COUNT(*) FROM gamestoretp.users WHERE username = :username");
     $stmt->execute([':username' => $username]);
     $count = $stmt->fetchColumn();
 
@@ -36,7 +36,7 @@ if (
         $response = ['success' => false, 'message' => 'Le pseudo est déjà utilisé.'];
     } else {
         $stmt = $pdo->prepare("
-            INSERT INTO users (image_url, username, password, first_name, last_name, email, address, role, created_at) 
+            INSERT INTO gamestoretp.users (image_url, username, password, first_name, last_name, email, address, role, created_at) 
             VALUES ('asset/profils/defaut.png', :username, :password, :first_name, :last_name, :email, :address, 'Employés', NOW())
         ");
         $success = $stmt->execute([

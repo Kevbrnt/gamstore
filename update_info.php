@@ -25,7 +25,7 @@ if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
 }
 
 // Préparer la requête de mise à jour
-$query = "UPDATE users SET email = :email, username = :username, first_name = :first_name, last_name = :last_name, address = :address WHERE id = :user_id";
+$query = "UPDATE gamestoretp.users SET email = :email, username = :username, first_name = :first_name, last_name = :last_name, address = :address WHERE id = :user_id";
 $stmt = $pdo->prepare($query);
 $result = $stmt->execute([
     'email' => $email,

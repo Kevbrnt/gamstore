@@ -46,7 +46,7 @@ if (
 
     // Préparation de la requête SQL
     $stmt = $pdo->prepare("
-        INSERT INTO games (name, pegi, genre, price, promotion_price, stock, image_url, platform, add_at, Description) 
+        INSERT INTO gamestoretp.games (name, pegi, genre, price, promotion_price, stock, image_url, platform, add_at, Description) 
         VALUES (:name, :pegi, :genre, :price, :promotion_price, :stock, :image_url, :platform, NOW(), :description)
     ");
 

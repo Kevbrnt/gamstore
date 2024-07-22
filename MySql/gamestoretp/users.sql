@@ -17,7 +17,7 @@ create table gamestoretp.users
         unique (username)
 );
 
-insert into users (username, first_name, last_name, email, address, password, add_at, image_url, role)
+insert into gamestoretp.users (username, first_name, last_name, email, address, password, add_at, image_url, role)
 value ('Gamestore@Visiteur', 'John', 'Doe', 'email@email.com', 'Adresse', 'Gamestore', NOW(), 'assets/profils/default.png', 'Visiteur'),
     ('Gamestore@Employés', 'Louis', 'Doe', 'email@email.com', 'Adresse', 'Gamestore', NOW(), 'assets/profils/default.png', 'Employés'),
     ('Gamestore@Admin', 'Marc', 'Doe', 'email@email.com', 'Adresse', 'Gamestore', NOW(), 'assets/profils/default.png', 'Administrateur');

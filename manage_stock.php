@@ -9,7 +9,7 @@ if (
     $stock_quantity = $_POST['stock_quantity'];
 
     $stmt = $pdo->prepare("
-        UPDATE games 
+        UPDATE gamestoretp.games 
         SET stock = stock + :stock_quantity 
         WHERE id = :game_id
     ");

@@ -14,9 +14,9 @@ $user_id = $_POST['user_id'];
 // Récupérer les commandes de l'utilisateur depuis la base de données
 $query = "
     SELECT c.id, c.date_commande, c.montant, p.nom_produit, lc.quantite, lc.prix
-    FROM orders c
-    INNER JOIN lignes_commande lc ON c.id = lc.commande_id
-    INNER JOIN order_items p ON lc.produit_id = p.id
+    FROM gamestoretp.orders c
+    INNER JOIN gamestoretp.lignes_commande lc ON c.id = lc.commande_id
+    INNER JOIN gamestoretp.order_items p ON lc.produit_id = p.id
     WHERE c.user_id = :user_id
     ORDER BY c.date_commande DESC
 ";

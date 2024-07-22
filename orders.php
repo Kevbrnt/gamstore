@@ -11,9 +11,9 @@ if ($order_id === null) {
 }
 
 $sql = "SELECT orders.id, orders.total_price, orders.status, orders.created_at, order_items.quantity, order_items.price, games.name
-        FROM orders
-        JOIN order_items ON orders.id = order_items.order_id
-        JOIN games ON order_items.game_id = games.id
+        FROM gamestoretp.orders
+        JOIN gamestoretp.order_items ON orders.id = order_items.order_id
+        JOIN gamestoretp.games ON order_items.game_id = games.id
         WHERE orders.user_id = :user_id AND orders.id = :order_id";
 
 $stmt = $pdo->prepare($sql);

@@ -7,8 +7,8 @@ function appliquerPromotion($codePromotion, $totalPanier, $user_id) {
     // Vérifier si le code promo est valide et non encore utilisé par cet utilisateur
     $stmt = $pdo->prepare("
         SELECT p.id, p.pourcentage, p.date_debut, p.date_fin
-        FROM promotions p
-        LEFT JOIN used_promotions up ON p.id = up.promotion_id AND up.user_id = :user_id
+        FROM gamestoretp.promotions p
+        LEFT JOIN gamestoretp.used_promotions up ON p.id = up.promotion_id AND up.user_id = :user_id
         WHERE p.code = :code 
         AND CURDATE() BETWEEN p.date_debut AND p.date_fin 
         AND up.id IS NULL
@@ -24,7 +24,7 @@ function appliquerPromotion($codePromotion, $totalPanier, $user_id) {
 
         // Enregistrez l'utilisation du code promo
         $stmt = $pdo->prepare("
-            INSERT INTO used_promotions (user_id, promotion_id) 
+            INSERT INTO gamestoretp.used_promotions (user_id, promotion_id) 
             VALUES (:user_id, :promotion_id)
         ");
         $stmt->execute([':user_id' => $user_id, ':promotion_id' => $promotion['id']]);

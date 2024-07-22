@@ -13,7 +13,7 @@ if (isset($_POST['item_id'])) {
     $item_id = $_POST['item_id'];
 
     // Supprimer l'article du panier
-    $stmt = $pdo->prepare("DELETE FROM cart WHERE id = :item_id AND user_id = :user_id");
+    $stmt = $pdo->prepare("DELETE FROM gamestoretp.cart WHERE id = :item_id AND user_id = :user_id");
     $stmt->execute([':item_id' => $item_id, ':user_id' => $user_id]);
 
     // Recalculer le total du panier
@@ -25,8 +25,8 @@ if (isset($_POST['item_id'])) {
                     ELSE games.price * cart.quantity 
                 END
             ) AS total_price
-        FROM cart
-        INNER JOIN games ON cart.game_id = games.id
+        FROM gamestoretp.cart
+        INNER JOIN gamestoretp.games ON cart.game_id = games.id
         WHERE cart.user_id = :user_id
     ");
     $stmt->execute([':user_id' => $user_id]);

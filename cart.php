@@ -24,8 +24,8 @@ $stmt = $pdo->prepare("
             ELSE games.price 
         END * cart.quantity) AS total_price, 
         games.image_url
-    FROM cart
-    INNER JOIN games ON cart.game_id = games.id
+    FROM gamestoretp.cart
+    INNER JOIN gamestoretp.games ON cart.game_id = games.id
     WHERE cart.user_id = :user_id
 ");
 $stmt->execute([':user_id' => $user_id]);
@@ -35,7 +35,7 @@ $total_panier = array_sum(array_column($cart_items, 'total_price'));
 $_SESSION['total_price'] = $total_panier; // Mettre à jour le total du panier dans la session
 
 // Récupérer les adresses de retrait
-$sql = "SELECT * FROM retrait";
+$sql = "SELECT * FROM gamestoretp.retrait";
 $stmt = $pdo->query($sql);
 $retails = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>

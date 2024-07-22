@@ -6,13 +6,13 @@ include 'connect_bdd.php';
 $isLoggedIn = isset($_SESSION['id']);
 
 // Récupérer tous les genres uniques
-$genreQuery = "SELECT DISTINCT genre FROM games ORDER BY genre";
+$genreQuery = "SELECT DISTINCT genre FROM gamestoretp.games ORDER BY genre";
 $genreStmt = $pdo->prepare($genreQuery);
 $genreStmt->execute();
 $genres = $genreStmt->fetchAll(PDO::FETCH_COLUMN);
 
 // Récupérer toutes les plateformes
-$platformQuery = "SELECT platform FROM games ORDER BY platform";
+$platformQuery = "SELECT platform FROM gamestoretp.games ORDER BY platform";
 $platformStmt = $pdo->prepare($platformQuery);
 $platformStmt->execute();
 $console = $platformStmt->fetchAll(PDO::FETCH_COLUMN);
@@ -24,7 +24,7 @@ $platform = isset($_GET['platform']) ? htmlspecialchars($_GET['platform']) : '';
 $maxPrice = isset($_GET['max_price']) ? filter_var($_GET['max_price'], FILTER_VALIDATE_FLOAT) : 0;
 
 // SQL query pour récupérer les jeux
-$sql = "SELECT * FROM games WHERE 1=1";
+$sql = "SELECT * FROM gamestoretp.games WHERE 1=1";
 
 // Ajouter des filtres
 if ($genre) {

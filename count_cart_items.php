@@ -12,7 +12,7 @@ if (!isset($_SESSION['id'])) {
 $user_id = $_SESSION['id'];
 
 // Comptez le nombre d'articles dans le panier de l'utilisateur
-$stmt = $pdo->prepare("SELECT COUNT(*) AS item_count FROM cart WHERE user_id = :user_id");
+$stmt = $pdo->prepare("SELECT COUNT(*) AS item_count FROM gamestoretp.cart WHERE user_id = :user_id");
 $stmt->execute([':user_id' => $user_id]);
 $result = $stmt->fetch(PDO::FETCH_ASSOC);
 

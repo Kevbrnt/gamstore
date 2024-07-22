@@ -13,7 +13,7 @@ require 'connect_bdd.php';  // Connexion à la base de données
 // Obtenir les informations de la table retrait
 $sql = "
     SELECT *
-    FROM retrait
+    FROM gamestoretp.retrait
 ";
 
 // Exécuter la requête
@@ -101,12 +101,12 @@ $retails = $stmt->fetchAll(PDO::FETCH_ASSOC);
             SELECT games.name AS game_name, SUM(total_sales) AS total_sales
             FROM (
                 SELECT order_items.game_id, SUM(order_items.quantity) AS total_sales
-                FROM order_items
-                INNER JOIN orders ON order_items.order_id = orders.id
+                FROM gamestoretp.order_items
+                INNER JOIN gamestoretp.orders ON order_items.order_id = orders.id
                 WHERE orders.status = 'LIVRE'
                 GROUP BY order_items.game_id
                 ) AS combined_sales
-            INNER JOIN games ON combined_sales.game_id = games.id
+            INNER JOIN gamestoretp.games ON combined_sales.game_id = games.id
             GROUP BY combined_sales.game_id
             ORDER BY total_sales DESC
             LIMIT 5"; // Limiter aux 5 meilleurs ventes, par exemple
