@@ -18,7 +18,7 @@ $platformStmt->execute();
 $console = $platformStmt->fetchAll(PDO::FETCH_COLUMN);
 
 // Initialiser les filtres
-$highestPrice = isset($_GET['highestPrice']) ;
+$highestPrice = isset($_GET['highestPrice']);
 $genre = isset($_GET['genre']) ? htmlspecialchars($_GET['genre']) : '';
 $platform = isset($_GET['platform']) ? htmlspecialchars($_GET['platform']) : '';
 $maxPrice = isset($_GET['max_price']) ? filter_var($_GET['max_price'], FILTER_VALIDATE_FLOAT) : 0;
@@ -56,6 +56,14 @@ if (!$stmt->execute()) {
 }
 
 $games = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+function getFullImageUrl($imageUrl) {
+    $baseUrl = 'https://gamestore-unique123-lingering-pine-4132.fly.dev'; // Remplacez par l'URL réelle de votre site
+    if (strpos($imageUrl, 'http') === 0) {
+        return $imageUrl; // L'URL est déjà complète
+    }
+    return $baseUrl . $imageUrl;
+}
 ?>
 
 <!DOCTYPE HTML>
@@ -127,29 +135,31 @@ $games = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                 </option>
                             <?php endforeach; ?>
                         </select>
-                    </div></div>
+                    </div>
+                </div>
             </form>
 
-                        <!-- Formulaire de recherche par plateformes -->
-                        <form method="GET" class="col">
-                            <div class="form-row">
-                                <div class="col">
-                                    <label for="platform">Plateformes:</label>
-                                    <select id="platform" name="platform" class="form-control">
-                                        <option value="">Tous les plateformes</option>
-                                        <?php foreach ($console as $c): ?>
-                                            <option value="<?php echo htmlspecialchars($c); ?>" <?php echo $c === $console ? 'selected' : ''; ?>>
-                                                <?php echo htmlspecialchars($c); ?>
-                                            </option>
-                                        <?php endforeach; ?>
-                                    </select>
-                                </div></div>
+            <!-- Formulaire de recherche par plateformes -->
+            <form method="GET" class="col">
+                <div class="form-row">
+                    <div class="col">
+                        <label for="platform">Plateformes:</label>
+                        <select id="platform" name="platform" class="form-control">
+                            <option value="">Tous les plateformes</option>
+                            <?php foreach ($console as $c): ?>
+                                <option value="<?php echo htmlspecialchars($c); ?>" <?php echo $c === $platform ? 'selected' : ''; ?>>
+                                    <?php echo htmlspecialchars($c); ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                </div>
 
-                        <br>
-                        <label for="priceRange">Prix maximum:</label>
-                        <input type="range" name="max_price" id="priceRange" class="form-control-range" min="0" max="<?php echo htmlspecialchars($highestPrice) ?>" value="<?php echo htmlspecialchars($maxPrice); ?>" oninput="updatePriceLabel(this.value)">
-                        <label class="color_write">Prix: <span id="priceLabel"><?php echo htmlspecialchars($maxPrice); ?></span>€</label>
-                        <div><button type="submit" class="btn btn-primary">Rechercher</button></div>
+                <br>
+                <label for="priceRange">Prix maximum:</label>
+                <input type="range" name="max_price" id="priceRange" class="form-control-range" min="0" max="<?php echo htmlspecialchars($highestPrice) ?>" value="<?php echo htmlspecialchars($maxPrice); ?>" oninput="updatePriceLabel(this.value)">
+                <label class="color_write">Prix: <span id="priceLabel"><?php echo htmlspecialchars($maxPrice); ?></span>€</label>
+                <div><button type="submit" class="btn btn-primary">Rechercher</button></div>
             </form>
 
             <br>
@@ -168,7 +178,7 @@ $games = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             echo "<div class='promo-badge'></div>";
                         }
                         echo "<div class='out-of-stock' style='display: " . ($isOutOfStock ? 'block' : 'none') . ";'><div class='text'>Rupture de stock</div></div>";
-                        echo "<img src='" . htmlspecialchars($row['image_url']) . "' class='product-image' alt='" . htmlspecialchars($row['name']) . "' data-toggle='modal' data-target='#detailsModal" . htmlspecialchars($row['id']) . "'>";
+                        echo "<img src='" . htmlspecialchars(getFullImageUrl($row['image_url'])) . "' class='product-image' alt='" . htmlspecialchars($row['name']) . "' data-toggle='modal' data-target='#detailsModal" . htmlspecialchars($row['id']) . "' onerror=\"this.src='https://votre-site.fly.dev/asset/default-image.jpg'\">";
                         echo "</div>";
 
                         // Modal pour chaque jeu
@@ -182,8 +192,8 @@ $games = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         echo "</button>";
                         echo "</div>";
                         echo "<div class='modal-body'>";
-                        echo "<img src='" . htmlspecialchars($row['image_url']) . "' class='card-img-top' alt='" . htmlspecialchars($row['name']) . "'>";
-                        echo "<p><strong>Description:</strong> " . htmlspecialchars($row['Description']) . "</p>";
+                        echo "<img src='" . htmlspecialchars(getFullImageUrl($row['image_url'])) . "' class='card-img-top' alt='" . htmlspecialchars($row['name']) . "' onerror=\"this.src='https://votre-site.fly.dev/asset/default-image.jpg'\">";
+                        echo "<p><strong>Description:</strong> " . htmlspecialchars($row['description']) . "</p>";
                         echo "<p><strong>Genre:</strong> " . htmlspecialchars($row['genre']) . "</p>";
                         echo "<p><strong>PEGI:</strong> " . htmlspecialchars($row['pegi']) . "</p>";
                         echo "<p><strong>Console:</strong> " . htmlspecialchars($row['platform']) . "</p>";

@@ -2,16 +2,19 @@
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
-require "connect_bdd_mongodb.php";
+
 // Connexion à MongoDB
 require 'vendor/autoload.php'; // Composer autoload file
-use MongoDB\Client as MongoClient;
-use MongoDB\BSON\UTCDateTime;
+
 require "connect_bdd.php";
-
+require "connect_bdd_mongodb.php";
 $chartData = [];
+// Assurez-vous que $collection est défini avant de l'utiliser
+if (!isset($collection)) {
+die("La connexion à la base de données n'a pas été établie correctement.");
+}
 
-$pipeline = [
+$result = $collection->aggregate($pipeline = [
     [
         '$group' => [
             '_id' => ['name' => '$name', 'date' => ['$dateToString' => ['format' => '%Y-%m-%d', 'date' => '$date']]],
@@ -20,9 +23,7 @@ $pipeline = [
         ]
     ],
     ['$sort' => ['_id.date' => 1]]
-];
-
-$result = $collection->aggregate($pipeline);
+]);
 
 foreach ($result as $entry) {
     $articleName = $entry['_id']['name'];

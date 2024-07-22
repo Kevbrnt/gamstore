@@ -2,23 +2,20 @@
 session_start();
 require __DIR__ . '/vendor/autoload.php';
 
-//$app = require __DIR__ . '/server.js';
-
-$request = $_SERVER['REQUEST_URI'];
-
-// Gérer la requête avec Express
-//$app->handle($request);
 require 'connect_bdd.php';  // Connexion à la base de données
 
 // Obtenir les informations de la table retrait
-$sql = "
-    SELECT *
-    FROM gamestoretp.retrait
-";
-
-// Exécuter la requête
+$sql = "SELECT * FROM gamestoretp.retrait";
 $stmt = $pdo->query($sql);
 $retails = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+function getFullImageUrl($imageUrl) {
+    $baseUrl = 'https://gamestore-unique123-lingering-pine-4132.fly.dev'; // Remplacez par l'URL réelle de votre site
+    if (strpos($imageUrl, 'http') === 0) {
+        return $imageUrl; // L'URL est déjà complète
+    }
+    return $baseUrl . $imageUrl;
+}
 ?>
 
 <!DOCTYPE html>
@@ -35,7 +32,6 @@ $retails = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="CSS/Gamestore.css">
     <style>
-        /* Style pour le logo promo */
         .promo-logo {
             position: absolute;
             top: 0;
@@ -46,7 +42,6 @@ $retails = $stmt->fetchAll(PDO::FETCH_ASSOC);
             width: 40px;
             height: 40px;
         }
-        /* Style pour le prix promotionnel */
         .promotion-price {
             color: green;
             font-weight: bold;
@@ -60,9 +55,6 @@ $retails = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <div class="content4">
     <div class="container3">
         <div class="content4">
-
-            <!-- Description -->
-
             <h1>Bienvenue chez GameStore</h1><hr>
 
             <p style="color: aliceblue">Gamestore est une entreprise spécialisée dans la vente de jeu vidéo.
@@ -94,38 +86,6 @@ $retails = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <p style="color: aliceblue">Nous proposons des jeux vidéo sur toutes les plateformes connues à ce jour.</p>
         </div>
 
-        <!-- Selection des meilleures ventes -->
-            <?php
-            // obtenir les meilleures ventes en fonction des commandes et des commandes mag
-            $sql = "
-            SELECT games.name AS game_name, SUM(total_sales) AS total_sales
-            FROM (
-                SELECT order_items.game_id, SUM(order_items.quantity) AS total_sales
-                FROM gamestoretp.order_items
-                INNER JOIN gamestoretp.orders ON order_items.order_id = orders.id
-                WHERE orders.status = 'LIVRE'
-                GROUP BY order_items.game_id
-                ) AS combined_sales
-            INNER JOIN gamestoretp.games ON combined_sales.game_id = games.id
-            GROUP BY combined_sales.game_id
-            ORDER BY total_sales DESC
-            LIMIT 5"; // Limiter aux 5 meilleurs ventes, par exemple
-
-            $stmt = $pdo->query($sql);
-            $topSales = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-            // Préparer les données
-            $gameNames = [];
-            $totalSales = [];
-
-            foreach ($topSales as $sale) {
-                $gameNames[] = $sale['game_name'];
-                $totalSales[] = $sale['total_sales'];
-            }
-            ?>
-
-
-        <!-- Les derniers Jeux ajoutés -->
         <div style="border: 5px solid orangered; margin: 10px">
             <h1>Les derniers ajouts</h1><hr>
             <div id="latest-games" class="row"></div>
@@ -133,7 +93,6 @@ $retails = $stmt->fetchAll(PDO::FETCH_ASSOC);
     </div>
 </div>
 
-<!-- Les scripts -->
 <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 <script>
     $(document).ready(function() {
@@ -141,9 +100,8 @@ $retails = $stmt->fetchAll(PDO::FETCH_ASSOC);
             url: 'api.php',
             method: 'GET',
             success: function(response) {
-                console.log('Données récupérées:', response);  // Ajout de log pour vérifier la réponse
+                console.log('Données récupérées:', response);
                 response.forEach(function(game) {
-                    // Comparer promotion_price et price, et choisir le bon prix à afficher
                     let priceToShow;
                     let priceClass = '';
 
@@ -155,14 +113,13 @@ $retails = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         priceClass = 'regular-price';
                     }
 
-                    // Crée un HTML avec ou sans logo promo
                     let promoLogo = (parseFloat(game.promotion_price) < parseFloat(game.price) && parseFloat(game.promotion_price) > 0.00) ? '<img src="asset/promo.png" alt="Promotion" class="promo-badge">' : '';
 
                     $('#latest-games').append(`
                         <div class="col-md-2">
                             <div class="card">
                                 ${promoLogo}
-                                <img src="${game.image_url}" class="card-img-top" alt="${game.name}" style="width:400px;height:400px;">
+                                <img src="${getFullImageUrl(game.image_url)}" class="card-img-top" alt="${game.name}" style="width:400px;height:400px;" onerror="this.src='https://votre-site.fly.dev/asset/default-image.jpg'">
                                 <div class="card-body"  style="height: 150px">
                                     <h5 class="card-title">${game.name}</h5>
                                     <p class="card-text ${priceClass}">${priceToShow.toFixed(2)} €</p>
@@ -177,10 +134,7 @@ $retails = $stmt->fetchAll(PDO::FETCH_ASSOC);
             }
         });
     });
-</script>
 
-<script>
-    // Calcule le nombre d'objets au panier
     document.addEventListener("DOMContentLoaded", function() {
         fetch('count_cart_items.php')
             .then(response => response.json())
@@ -197,7 +151,7 @@ $retails = $stmt->fetchAll(PDO::FETCH_ASSOC);
 </script>
 
 <br>
-
-</body>
 <footer> <?php require "footer.php" ?></footer>
+</body>
+
 </html>

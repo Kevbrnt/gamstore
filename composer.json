@@ -3,6 +3,7 @@
         "php": "^8.2",
         "phpmailer/phpmailer": "^6.8",
         "mongodb/mongodb": "^1.19.1",
-        "composer/composer": "^2.5"
+        "composer/composer": "^2.5",
+      "ext-mongodb": "*"
     }
 }

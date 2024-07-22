@@ -9,6 +9,10 @@ DATABASE8_PORT = "5432"
 [build]
 dockerfile = "Dockerfile"
 
+[mounts]
+source="gamestore_assets"
+destination="/app/asset"
+
 [http_service]
 internal_port = 80
 force_https = true

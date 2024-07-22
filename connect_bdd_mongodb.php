@@ -1,24 +1,44 @@
 <?php
-require 'vendor/autoload.php'; // Composer autoload file
+require 'vendor/autoload.php'; // Assurez-vous que Composer est correctement configuré
 
-$mongoUri = getenv('MONGODB_URI');
+$uri = 'mongodb://vercel-admin-user:2309@atlas-sql-6698257b14587d4d00ef8c7f-1inwc.a.query.mongodb.net/Gamestore?ssl=true&authSource=admin';
 
 try {
-    $client = new MongoDB\Client($mongoUri);
-    $collection = $client->gamestore->sales;
+    // Créez un client MongoDB
+    $client = new MongoDB\Client($uri);
 
-    // Exemple d'agrégation simple
-    $result = $collection->aggregate([
-        ['$match' => []],  // Ceci sélectionne tous les documents
-        ['$limit' => 10]   // Limite le résultat à 10 documents
-    ]);
+    // Sélectionnez la base de données et la collection
+    $collection = $client->Gamestore->sales;
 
-    // Vous pouvez maintenant itérer sur $result
-    foreach ($result as $document) {
-        // Traitement de chaque document
-        print_r($document);
+    // Définissez les étapes de l'agrégation
+    $pipeline = [
+        [
+            '$group' => [
+                '_id' => [
+                    'name' => '$name',
+                    'date' => [
+                        '$dateToString' => [
+                            'format' => '%Y-%m-%d',
+                            'date' => '$date'
+                        ]
+                    ]
+                ],
+                'total_sales' => ['$sum' => '$sales'],
+                'total_revenue' => ['$sum' => '$revenue']
+            ]
+        ],
+        ['$sort' => ['_id.date' => 1]]
+    ];
+
+    // Exécutez l'agrégation
+    $cursor = $collection->aggregate($pipeline);
+
+    // Affichez les résultats
+    foreach ($cursor as $document) {
+        echo json_encode($document) . "\n";
     }
 
-} catch (MongoDB\Driver\Exception\Exception $e) {
-    echo "Une erreur est survenue : " . $e->getMessage();
+} catch (Exception $e) {
+    echo "Erreur : ", $e->getMessage(), "\n";
 }
+?>
