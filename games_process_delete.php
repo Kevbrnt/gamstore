@@ -10,12 +10,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     try {
-        // Supprimer les enregistrements associés dans la table `sales`
-        $deleteSalesQuery = $pdo->prepare("DELETE FROM gamestoretp.sales WHERE game_id = :game_id");
-        $deleteSalesQuery->execute(['game_id' => $gameId]);
 
         // Récupérer les informations du jeu à supprimer
-        $query = $pdo->prepare("SELECT image_url FROM gamestoretp.games WHERE id = :id");
+        $query = $pdo->prepare("SELECT image_url FROM games WHERE id = :id");
         $query->execute(['id' => $gameId]);
         $game = $query->fetch(PDO::FETCH_ASSOC);
 
@@ -30,7 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         // Supprimer le jeu de la base de données
-        $deleteQuery = $pdo->prepare("DELETE FROM gamestoretp.games WHERE id = :id");
+        $deleteQuery = $pdo->prepare("DELETE FROM games WHERE id = :id");
         $deleteQuery->execute(['id' => $gameId]);
 
         echo json_encode(['success' => true, 'message' => 'Jeu supprimé avec succès.']);

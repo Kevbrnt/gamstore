@@ -1,39 +1,45 @@
-app = "gamestore-unique123-lingering-pine-4132"
+# fly.toml app configuration file generated for gamestoreprojet on 2024-07-22T21:58:41+02:00
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
 
-[env]
-DATABASE_HOST = "gamestoretp.internal"
-DATABASE_NAME = "postgres"
-DATABASE_USER = "postgres"
-DATABASE8_PORT = "5432"
+app = 'gamestoreprojet'
+primary_region = 'cdg'
 
 [build]
-dockerfile = "Dockerfile"
+  dockerfile = 'Dockerfile'
 
-[mounts]
-source="gamestore_assets"
-destination="/app/asset"
+[env]
+DB_HOST = "aws-0-eu-central-1.pooler.supabase.com"
+DB_PORT = "6543"
+DB_NAME = "postgres"
+DB_USER = "postgres.xswqldcbukisjyjezshy"
+MONGODB_URI = "{{.MONGODB_URI}}"
 
 [http_service]
-internal_port = 80
-force_https = true
+  internal_port = 80
+  force_https = true
 
 [[services]]
-http_checks = []
-internal_port = 80
-processes = ["app"]
-protocol = "tcp"
-script_checks = []
+  protocol = 'tcp'
+  internal_port = 80
+  processes = ['app']
 
-[services.concurrency]
-hard_limit = 25
-soft_limit = 20
-type = "connections"
+  [[services.ports]]
+    port = 80
+    handlers = ['http']
+    force_https = true
 
-[[services.ports]]
-force_https = true
-handlers = ["http"]
-port = 80
+  [[services.ports]]
+    port = 443
+    handlers = ['tls', 'http']
 
-[[services.ports]]
-handlers = ["tls", "http"]
-port = 443
+  [services.concurrency]
+    type = 'connections'
+    hard_limit = 25
+    soft_limit = 20
+
+[[vm]]
+  memory = '2gb'
+  cpu_kind = 'shared'
+  cpus = 1

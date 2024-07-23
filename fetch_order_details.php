@@ -13,7 +13,7 @@ use MongoDB\Client as MongoClient;
 // Connexion à la base de données MongoDB
 try {
     $client = new MongoClient("mongodb://localhost:27017");
-    $collection = $client->gamestore->sales; // Changer "gamestore" au nom de votre base de données
+    $collection = $client->Gamestore->sales; // Changer "gamestore" au nom de votre base de données
 } catch (Exception $e) {
     header('HTTP/1.1 500 Internal Server Error');
     exit('Erreur de connexion à MongoDB : ' . $e->getMessage());

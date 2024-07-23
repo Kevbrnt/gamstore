@@ -1,11 +1,7 @@
 <?php
 session_start();
 require 'connect_bdd.php';
-
-if (!isset($_SESSION['role']) || $_SESSION['role'] !== 'Employés') {
-    echo "Accès non autorisé.";
-    exit;
-}
+require "connect_bdd_mongodb.php";
 
 require 'menu.php';
 
@@ -26,21 +22,27 @@ if (!class_exists('PHPMailer\PHPMailer\PHPMailer')) {
     exit;
 }
 
-try {
-    $client = new MongoClient("mongodb://localhost:27017");
-    $collection = $client->gamestore->sales;
-} catch (Exception $e) {
-    echo "Erreur de connexion à MongoDB : " . $e->getMessage();
-    exit;
+// Fonction pour obtenir l'URL complète des images
+function getFullImageUrl($imageUrl) {
+    $baseUrl = 'https://votre-site.fly.dev'; // Remplacez par l'URL réelle de votre site
+    if (strpos($imageUrl, 'http') === 0) {
+        return $imageUrl;
+    }
+    return $baseUrl . '/asset/' . ltrim($imageUrl, '/');
+}
+
+// Vérification de la connexion MongoDB
+if (!isset($collection)) {
+    die("Erreur : La connexion à MongoDB n'a pas pu être établie.");
 }
 
 // Gestion de la commande
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['update_order_status'])) {
     $order_id = $_POST['order_id'];
-    $new_status = 'LIVRÉ'; // On change le statut à 'LIVRÉ'
+    $new_status = 'LIVRE'; // On change le statut à 'LIVRÉ'
 
     // On met à jour le statut de la commande dans la base de données
-    $stmt = $pdo->prepare("UPDATE gamestoretp.orders SET status = :new_status WHERE id = :order_id AND status = 'VALIDÉ'");
+    $stmt = $pdo->prepare("UPDATE orders SET status = :new_status WHERE id = :order_id AND status = 'VALIDE'");
     $stmt->execute(['new_status' => $new_status, 'order_id' => $order_id]);
 
     // Vérification du succès de la mise à jour
@@ -51,8 +53,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['update_order_status'])
         // Récupérer les détails de la commande pour mettre à jour MongoDB
         $stmt = $pdo->prepare("
             SELECT games.name, games.price, order_items.quantity
-            FROM gamestoretp.order_items
-            JOIN gamestoretp.games ON order_items.game_id = games.id
+            FROM order_items
+            JOIN games ON order_items.game_id = games.id
             WHERE order_items.order_id = :order_id
         ");
         $stmt->execute(['order_id' => $order_id]);
@@ -62,94 +64,99 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['update_order_status'])
         foreach ($order_items as $item) {
             // Obtenir la date du jour en format MongoDB
             $currentDate = new UTCDateTime();
+            $todayStart = new UTCDateTime(strtotime('today midnight') * 1000);
 
-            $result = $collection->updateOne(
-                ['name' => $item['name']],
-                [
-                    '$inc' => [
-                        'sales' => $item['quantity'],
-                        'revenue' => $item['price'] * $item['quantity']
+            try {
+                $result = $collection->updateOne(
+                    ['name' => $item['name']],
+                    [
+                        '$inc' => [
+                            'sales' => (int)$item['quantity'],
+                            'revenue' => (float)($item['price'] * $item['quantity'])
+                        ],
+                        '$set' => ['date' => $currentDate],
+                        '$push' => [
+                            'daily_sales' => [
+                                'date' => $todayStart,
+                                'quantity' => (int)$item['quantity'],
+                                'revenue' => (float)($item['price'] * $item['quantity'])
+                            ]
+                        ]
                     ],
-                    '$set' => ['date' => $currentDate]
-                ],
-                ['upsert' => true]
-            );
-
-            // Vérification de l'insertion ou mise à jour dans MongoDB
-            if ($result->getModifiedCount() > 0) {
-                // Succès
-                // Optionnel : Vous pouvez ajouter un message de succès pour MongoDB si nécessaire
-            } else {
-                // Échec
-                // Optionnel : Vous pouvez ajouter un message d'erreur pour MongoDB si nécessaire
+                    ['upsert' => true]
+                );
+                if ($result->getModifiedCount() > 0 || $result->getUpsertedCount() > 0) {
+                    error_log('Mise à jour MongoDB réussie pour ' . $item['name']);
+                } else {
+                    error_log('Aucune mise à jour nécessaire pour ' . $item['name']);
+                }
+            } catch (Exception $e) {
+                error_log('Erreur lors de la mise à jour MongoDB : ' . $e->getMessage());
             }
-        }
 
-        // Envoyer l'email de confirmation
-        try {
-            // Récupérer les informations de l'utilisateur depuis la base de données
-            $stmt = $pdo->prepare("
-        SELECT users.first_name, users.last_name, users.email, users.username,
-               orders.total_price, orders.date_retrait, orders.retail_id,
-               retrait.adresse, retrait.code_postal, retrait.ville
-        FROM gamestoretp.orders
-        JOIN gamestoretp.users ON orders.user_id = users.id
-        JOIN gamestoretp.retrait ON orders.retail_id = retrait.id
-        WHERE orders.id = :order_id 
-    ");
-            $stmt->execute(['order_id' => $order_id]);
-            $user_info = $stmt->fetch();
+            // Envoyer l'email de confirmation
+            try {
+                // Récupérer les informations de l'utilisateur depuis la base de données
+                $stmt = $pdo->prepare("
+                SELECT users.first_name, users.last_name, users.email, users.username,
+                       orders.total_price, orders.date_retrait, orders.retail_id,
+                       retrait.adresse, retrait.code_postal, retrait.ville
+                FROM orders
+                JOIN users ON orders.user_id = users.id
+                JOIN retrait ON orders.retail_id = retrait.id
+                WHERE orders.id = :order_id 
+            ");
+                $stmt->execute(['order_id' => $order_id]);
+                $user_info = $stmt->fetch();
 
-            if ($user_info) {
-                $first_name = $user_info['first_name'];
-                $last_name = $user_info['last_name'];
-                $email = $user_info['email'];
-                $username = $user_info['username'];
-                $price = $user_info['total_price'];
-                $adresse = $user_info['adresse'];
-                $code_postal = $user_info['code_postal'];
-                $ville = $user_info['ville'];
-                $date = $user_info['date_retrait'];
+                if ($user_info) {
+                    $first_name = $user_info['first_name'];
+                    $last_name = $user_info['last_name'];
+                    $email = $user_info['email'];
+                    $username = $user_info['username'];
+                    $price = $user_info['total_price'];
+                    $adresse = $user_info['adresse'];
+                    $code_postal = $user_info['code_postal'];
+                    $ville = $user_info['ville'];
+                    $date = $user_info['date_retrait'];
 
-                // Vous pouvez maintenant utiliser $adresse, $ville et $code_postal comme suit :
-                $retrait = $adresse . ', ' . $ville . ' ' . $code_postal;
+                    $retrait = $adresse . ', ' . $ville . ' ' . $code_postal;
 
-                // Configurer le serveur SMTP
-                $mail = new PHPMailer(true);
-                $mail->isSMTP();
-                $mail->Host = 'smtp.gmail.com';  // Remplacez par le serveur SMTP de votre fournisseur d'email
-                $mail->SMTPAuth = true;
-                $mail->Username = 'praskavisuelle@gmail.com'; // Remplacez par votre adresse email
-                $mail->Password = 'jezg kshu phxl rmnw'; // Remplacez par le mot de passe de votre adresse email
-                $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-                $mail->Port = 587;
+                    // Configurer le serveur SMTP
+                    $mail = new PHPMailer(true);
+                    $mail->isSMTP();
+                    $mail->Host = 'smtp.gmail.com';
+                    $mail->SMTPAuth = true;
+                    $mail->Username = 'praskavisuelle@gmail.com';
+                    $mail->Password = 'jezg kshu phxl rmnw';
+                    $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+                    $mail->Port = 587;
 
-                // Expéditeur et destinataire
-                $mail->setFrom('noreply@gamestore.com', 'Gamestore');
-                $mail->addAddress($email, $username);
+                    // Expéditeur et destinataire
+                    $mail->setFrom('noreply@gamestore.com', 'Gamestore');
+                    $mail->addAddress($email, $username);
 
-                // Contenu de l'email
-                $mail->isHTML(true);
-                $mail->Subject = 'Votre commande Gamestore a été livrée !';
-                $mail->Body = "<h1>Bonjour $first_name $last_name,</h1>
-                                <p>Votre commande sur Gamestore a été retirer avec succès !</p>
+                    // Contenu de l'email
+                    $mail->isHTML(true);
+                    $mail->Subject = 'Votre commande Gamestore a été livrée !';
+                    $mail->Body = "<h1>Bonjour $first_name $last_name,</h1>
+                                <p>Votre commande sur Gamestore a été retirée avec succès !</p>
                                 <p>le $date au magasin situé au $retrait</p>
-                                <p>Vous avez payez $price € .</p>
+                                <p>Vous avez payé $price € .</p>
                                 <p>Merci pour votre achat!</p>
                                 <p>à bientôt,<br>L'équipe Gamestore</p>";
 
-                $mail->send();
-            } else {
-                $message = "Échec de l'envoi de l'email : les informations de l'utilisateur ne sont pas disponibles.";
+                    $mail->send();
+                } else {
+                    $message = "Échec de l'envoi de l'email : les informations de l'utilisateur ne sont pas disponibles.";
+                    $message_class = 'alert-danger';
+                }
+            } catch (Exception $e) {
+                // En cas d'erreur d'envoi de l'email
+                $message = "Erreur d'envoi d'email : " . $mail->ErrorInfo;
                 $message_class = 'alert-danger';
             }
-        } catch (Exception $e) {
-            // En cas d'erreur d'envoi de l'email
-            $message = "Erreur d'envoi d'email : " . $mail->ErrorInfo;
-            $message_class = 'alert-danger';
-        }
-
-    } else {
+        }} else {
         $message = "Échec de la mise à jour de la commande ou la commande n'est pas en statut 'VALIDÉ'.";
         $message_class = 'alert-danger';
     }
@@ -158,9 +165,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['update_order_status'])
 // Récupérer les commandes avec le statut 'VALIDÉ' et les informations des clients
 $stmt = $pdo->query("
     SELECT orders.id, orders.created_at, orders.date_retrait, orders.total_price, orders.status, users.first_name, users.last_name
-    FROM gamestoretp.orders
-    JOIN gamestoretp.users ON orders.user_id = users.id
-    WHERE orders.status = 'VALIDÉ'
+    FROM orders
+    JOIN users ON orders.user_id = users.id
+    WHERE orders.status = 'VALIDE'
 ");
 $valid_orders = $stmt->fetchAll();
 
@@ -178,26 +185,29 @@ $pipeline = [
     ['$sort' => ['_id.date' => 1]]
 ];
 
-$result = $collection->aggregate($pipeline);
+try {
+    $result = $collection->aggregate($pipeline);
 
-foreach ($result as $entry) {
-    $articleName = $entry['_id']['name'];
-    $salesDate = $entry['_id']['date'];
-    $totalSales = $entry['total_sales'];
-    $totalRevenue = $entry['total_revenue'];
+    foreach ($result as $entry) {
+        $articleName = $entry['_id']['name'];
+        $salesDate = $entry['_id']['date'];
+        $totalSales = $entry['total_sales'];
+        $totalRevenue = $entry['total_revenue'];
 
-    if (!isset($chartData[$articleName])) {
-        $chartData[$articleName] = [];
+        if (!isset($chartData[$articleName])) {
+            $chartData[$articleName] = [];
+        }
+
+        $chartData[$articleName][] = ['date' => $salesDate, 'sales' => $totalSales, 'revenue' => $totalRevenue];
     }
-
-    $chartData[$articleName][] = ['date' => $salesDate, 'sales' => $totalSales, 'revenue' => $totalRevenue];
+} catch (Exception $e) {
+    error_log("Erreur lors de l'agrégation MongoDB : " . $e->getMessage());
+    $chartData = []; // Initialiser avec un tableau vide en cas d'erreur
 }
 
 // Convertir $chartData en JSON pour l'utiliser dans JavaScript
 $chartDataJSON = json_encode($chartData);
 ?>
-
-
 
 <!DOCTYPE html>
 <html lang="fr">
@@ -208,19 +218,16 @@ $chartDataJSON = json_encode($chartData);
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="CSS/Gamestore.css">
-
 </head>
 <body>
 <div class="content4">
     <div class="container3">
         <h1>Espace Employé</h1>
 
-        <!-- Bouton pour afficher les commandes en attente de livraison -->
         <button class="btn btn-success mb-3" data-toggle="modal" data-target="#commandesModal">Commandes en attente de livraison</button>
         <div class="content4">
-        <canvas id="salesChart3" width="400" height="300" style="background-color: rgba(255,255,255,0.83)"></canvas>
-        <button id="detailsButton" class="btn btn-info mt-3">Détails des ventes par article</button>
-            <!-- Modal pour les détails des ventes -->
+            <canvas id="salesChart3" width="400" height="300" style="background-color: rgba(255,255,255,0.83)"></canvas>
+            <button id="detailsButton" class="btn btn-info mt-3">Détails des ventes par article</button>
             <div class="modal fade" id="salesDetailModal" tabindex="-1" role="dialog" aria-labelledby="salesDetailModalLabel" aria-hidden="true">
                 <div class="modal-dialog modal-lg" role="document">
                     <div class="modal-content">
@@ -234,7 +241,6 @@ $chartDataJSON = json_encode($chartData);
                             <label for="articleFilter">Filtrer par article :</label>
                             <select id="articleFilter" class="form-control">
                                 <option value="all">Tous</option>
-                                <!-- Options seront ajoutées dynamiquement -->
                             </select>
                             <table id="salesDetailTable" class="table table-bordered mt-3">
                                 <thead>
@@ -246,7 +252,6 @@ $chartDataJSON = json_encode($chartData);
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <!-- Les données seront ajoutées dynamiquement -->
                                 </tbody>
                             </table>
                         </div>
@@ -256,9 +261,10 @@ $chartDataJSON = json_encode($chartData);
                     </div>
                 </div>
             </div>
-
         </div>
-    </div></div>
+    </div>
+</div>
+
 <!-- Modal des Commandes en Attente -->
 <div class="modal fade" id="commandesModal" tabindex="-1" role="dialog" aria-labelledby="commandesModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg" role="document">

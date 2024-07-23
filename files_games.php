@@ -4,7 +4,7 @@ include 'connect_bdd.php';
 $price = isset($_GET['price']) ? intval($_GET['price']) : 0;
 $genre = isset($_GET['genre']) ? $_GET['genre'] : '';
 
-$query = "SELECT id, name, price, image_url FROM gamestoretp.games WHERE price <= :price";
+$query = "SELECT id, name, price, image_url FROM games WHERE price <= :price";
 $params = [':price' => $price];
 
 if ($genre) {

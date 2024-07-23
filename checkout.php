@@ -16,8 +16,8 @@ try {
     // Recalculer le prix total à partir des prix actuels des articles
     $stmt = $pdo->prepare("
         SELECT games.id, games.price, cart_items.quantity
-        FROM gamestoretp.cart_items
-        JOIN gamestoretp.games ON cart_items.game_id = games.id
+        FROM cart_items
+        JOIN games ON cart_items.game_id = games.id
         WHERE cart_items.cart_id = :cart_id AND cart_items.user_id = :user_id
     ");
     $stmt->execute([':cart_id' => $cart_id, ':user_id' => $user_id]);
@@ -31,7 +31,7 @@ try {
 
     // Créer la commande
     $stmt = $pdo->prepare("
-        INSERT INTO gamestoretp.orders (user_id, total_price, status, created_at)
+        INSERT INTO orders (user_id, total_price, status, created_at)
         VALUES (:user_id, :total_price, 'En attente', NOW())
     ");
     $stmt->execute([':user_id' => $user_id, ':total_price' => $total_price]);
@@ -41,7 +41,7 @@ try {
     // Insérer les articles de la commande
     foreach ($items as $item) {
         $stmt = $pdo->prepare("
-            INSERT INTO gamestoretp.order_items (order_id, game_id, quantity, price)
+            INSERT INTO order_items (order_id, game_id, quantity, price)
             VALUES (:order_id, :game_id, :quantity, :price)
         ");
         $stmt->execute([

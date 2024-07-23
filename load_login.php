@@ -6,7 +6,7 @@ require "connect_bdd.php";
 $username = $_POST["username"];
 $password = $_POST["password"];
 
-$stmt = $pdo->prepare("SELECT * FROM gamestoretp.users WHERE username = :username ");
+$stmt = $pdo->prepare("SELECT * FROM users WHERE username = :username ");
 $stmt->execute(['username' => $username]);
 $user = $stmt->fetch();
 

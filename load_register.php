@@ -17,7 +17,7 @@ $password = password_hash($_POST['password'], PASSWORD_BCRYPT);
 $username = $_POST['username'];
 
 // Vérifier si l'email existe déjà
-$stmt = $pdo->prepare("SELECT * FROM gamestoretp.users WHERE email = :email");
+$stmt = $pdo->prepare("SELECT * FROM users WHERE email = :email");
 $stmt->execute(['email' => $email]);
 $user = $stmt->fetch();
 
@@ -27,7 +27,7 @@ if ($user) {
 }
 
 // Insérer les données dans la base de données
-$stmt = $pdo->prepare("INSERT INTO gamestoretp.users (first_name, last_name, email, address, password, username, image_url) VALUES (:first_name, :last_name, :email, :address, :password, :username, :image_url)");
+$stmt = $pdo->prepare("INSERT INTO users (first_name, last_name, email, address, password, username, image_url) VALUES (:first_name, :last_name, :email, :address, :password, :username, :image_url)");
 $success = $stmt->execute([
     ':first_name' => $first_name,
     ':last_name' => $last_name,

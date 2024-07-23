@@ -1,5 +1,6 @@
 FROM php:8.2-apache
 
+RUN php -m | grep pdo
 # Installer les dépendances système nécessaires
 RUN apt-get update && apt-get install -y \
     git \

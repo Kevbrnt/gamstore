@@ -2,7 +2,7 @@
 CREATE SCHEMA IF NOT EXISTS gamestoretp;
 
 -- Table users
-CREATE TABLE gamestoretp.users (
+CREATE TABLE users (
                                    id SERIAL PRIMARY KEY,
                                    username VARCHAR(50) UNIQUE NOT NULL,
                                    first_name VARCHAR(50) NOT NULL,
@@ -16,7 +16,7 @@ CREATE TABLE gamestoretp.users (
 );
 
 -- Table games
-CREATE TABLE gamestoretp.games (
+CREATE TABLE games (
                                    id SERIAL PRIMARY KEY,
                                    name VARCHAR(100) NOT NULL,
                                    price DECIMAL(10, 2) NOT NULL,
@@ -31,7 +31,7 @@ CREATE TABLE gamestoretp.games (
 );
 
 -- Table cart
-CREATE TABLE gamestoretp.cart (
+CREATE TABLE cart (
                                   id SERIAL PRIMARY KEY,
                                   user_id INTEGER NOT NULL,
                                   game_id INTEGER NOT NULL,
@@ -45,7 +45,7 @@ CREATE INDEX game_id ON gamestoretp.cart (game_id);
 CREATE INDEX user_id ON gamestoretp.cart (user_id);
 
 -- Table retrait
-CREATE TABLE gamestoretp.retrait (
+CREATE TABLE retrait (
                                      id SERIAL PRIMARY KEY,
                                      adresse VARCHAR(100) NOT NULL,
                                      ville VARCHAR(100) NOT NULL,
@@ -53,7 +53,7 @@ CREATE TABLE gamestoretp.retrait (
 );
 
 -- Table orders
-CREATE TABLE gamestoretp.orders (
+CREATE TABLE orders (
                                     id SERIAL PRIMARY KEY,
                                     user_id INTEGER NOT NULL,
                                     total_price DECIMAL(10, 2) NOT NULL,
@@ -62,29 +62,29 @@ CREATE TABLE gamestoretp.orders (
                                     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
                                     retail_id INTEGER,
                                     date_retrait DATE NOT NULL,
-                                    CONSTRAINT orders_ibfk_1 FOREIGN KEY (user_id) REFERENCES gamestoretp.users (id) ON DELETE CASCADE,
-                                    CONSTRAINT orders_ibfk_2 FOREIGN KEY (retail_id) REFERENCES gamestoretp.retrait (id)
+                                    CONSTRAINT orders_ibfk_1 FOREIGN KEY (user_id) REFERENCES users (id) ON DELETE CASCADE,
+                                    CONSTRAINT orders_ibfk_2 FOREIGN KEY (retail_id) REFERENCES retrait (id)
 );
 
-CREATE INDEX retail_id ON gamestoretp.orders (retail_id);
-CREATE INDEX user_id ON gamestoretp.orders (user_id);
+CREATE INDEX retail_id ON orders (retail_id);
+CREATE INDEX user_id ON orders (user_id);
 
 -- Table order_items
-CREATE TABLE gamestoretp.order_items (
+CREATE TABLE order_items (
                                          id SERIAL PRIMARY KEY,
                                          order_id INTEGER NOT NULL,
                                          game_id INTEGER NOT NULL,
                                          quantity INTEGER NOT NULL,
                                          price DECIMAL(10, 2) NOT NULL,
-                                         CONSTRAINT order_items_ibfk_1 FOREIGN KEY (order_id) REFERENCES gamestoretp.orders (id) ON DELETE CASCADE,
-                                         CONSTRAINT order_items_ibfk_2 FOREIGN KEY (game_id) REFERENCES gamestoretp.games (id) ON DELETE CASCADE
+                                         CONSTRAINT order_items_ibfk_1 FOREIGN KEY (order_id) REFERENCES orders (id) ON DELETE CASCADE,
+                                         CONSTRAINT order_items_ibfk_2 FOREIGN KEY (game_id) REFERENCES games (id) ON DELETE CASCADE
 );
 
-CREATE INDEX game_id ON gamestoretp.order_items (game_id);
-CREATE INDEX order_id ON gamestoretp.order_items (order_id);
+CREATE INDEX game_id ON order_items (game_id);
+CREATE INDEX order_id ON order_items (order_id);
 
 -- Insertion des données dans la table retrait
-INSERT INTO gamestoretp.retrait (adresse, ville, code_postal) VALUES
+INSERT INTO retrait (adresse, ville, code_postal) VALUES
                                                                   ('5 rue de l''Arche Sèche', 'Nantes', '44000'),
                                                                   ('271 rue Léon Gambetta', 'Lille', '59000'),
                                                                   ('12 rue des trois-conils', 'Bordeaux', '33000'),

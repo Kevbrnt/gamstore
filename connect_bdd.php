@@ -6,9 +6,10 @@ $user = getenv('DB_USER');
 $password = getenv('DB_PASSWORD');
 
 try {
-    $pdo = new PDO("pgsql:host=$host;port=$port;dbname=$dbname", $user, $password);
+    $dsn = "pgsql:host=$host;port=$port;dbname=$dbname;user=$user;password=$password";
+    $pdo = new PDO($dsn);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 } catch(PDOException $e) {
-    die("Erreur de connexion : " . $e->getMessage());
+    die("Erreur de connexion à la base de données");
 }
 ?>

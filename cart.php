@@ -3,11 +3,6 @@ session_start();
 require "menu.php";
 include 'connect_bdd.php';
 
-// Vérifiez que l'utilisateur est connecté
-if (!isset($_SESSION['id'])) {
-    header('Location: login.php');
-    exit;
-}
 
 $user_id = $_SESSION['id'];
 
@@ -24,8 +19,8 @@ $stmt = $pdo->prepare("
             ELSE games.price 
         END * cart.quantity) AS total_price, 
         games.image_url
-    FROM gamestoretp.cart
-    INNER JOIN gamestoretp.games ON cart.game_id = games.id
+    FROM cart
+    INNER JOIN games ON cart.game_id = games.id
     WHERE cart.user_id = :user_id
 ");
 $stmt->execute([':user_id' => $user_id]);
@@ -35,17 +30,9 @@ $total_panier = array_sum(array_column($cart_items, 'total_price'));
 $_SESSION['total_price'] = $total_panier; // Mettre à jour le total du panier dans la session
 
 // Récupérer les adresses de retrait
-$sql = "SELECT * FROM gamestoretp.retrait";
+$sql = "SELECT * FROM retrait";
 $stmt = $pdo->query($sql);
 $retails = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-function getFullImageUrl($imageUrl) {
-    $baseUrl = 'https://gamestore-unique123-lingering-pine-4132.fly.dev'; // Remplacez par l'URL réelle de votre site
-    if (strpos($imageUrl, 'http') === 0) {
-        return $imageUrl; // L'URL est déjà complète
-    }
-    return $baseUrl . $imageUrl;
-}
 ?>
 
 <!DOCTYPE html>
@@ -91,7 +78,7 @@ function getFullImageUrl($imageUrl) {
             <div class="card-container">
                 <?php foreach ($cart_items as $item): ?>
                     <div class="card">
-                        <img src="<?php echo htmlspecialchars(getFullImageUrl($item['image_url'])); ?>" alt="<?php echo htmlspecialchars($item['name']); ?>" class="card-img" onerror="this.src='https://votre-site.fly.dev/asset/default-image.jpg';">
+                        <img src="<?php echo htmlspecialchars($item['image_url']); ?>" alt="<?php echo htmlspecialchars($item['name']); ?>" class="card-img" onerror="this.src='https://via.placeholder.com/150?text=Image+non+disponible';">
                         <div class="card-content">
                             <h1 class="card-title"><?php echo htmlspecialchars($item['name']); ?></h1>
                             <p class="card-quantity" style="color: black">Quantité : <?php echo htmlspecialchars($item['quantity']); ?></p>
@@ -152,10 +139,20 @@ function getFullImageUrl($imageUrl) {
     </div>
 </div>
 
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 <script src="JS/Date_limite.js"></script>
 <script>
+    // Mettre à jour le nombre d'articles dans le panier
+    function updateCartCount() {
+        fetch('count_cart_items.php')
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('cart-count').textContent = data.count;
+            })
+            .catch(error => console.error('Erreur:', error));
+    }
     document.addEventListener('DOMContentLoaded', function() {
         // Définir la date minimum et maximum pour le champ date
         const today = new Date();
@@ -238,7 +235,10 @@ function getFullImageUrl($imageUrl) {
         });
     });
 
-    function updateCartCount() {
+</script>
+<script>
+    // Calcule le nombre d'objets au panier
+    document.addEventListener("DOMContentLoaded", function() {
         fetch('count_cart_items.php')
             .then(response => response.json())
             .then(data => {
@@ -250,7 +250,7 @@ function getFullImageUrl($imageUrl) {
                 }
             })
             .catch(error => console.error('Erreur:', error));
-    }
+    });
 </script>
 </body>
 <?php require "footer.php";?>

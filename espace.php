@@ -1,4 +1,4 @@
-<?php session_start(); ?>
+
 
 <!DOCTYPE html>
 <html lang="fr">
@@ -29,7 +29,7 @@
     $user_id = $_SESSION['id'];
 
     // Récupérer les informations de l'utilisateur depuis la base de données
-    $query = "SELECT * FROM gamestoretp.users WHERE id = :user_id";
+    $query = "SELECT * FROM users WHERE id = :user_id";
     $stmt = $pdo->prepare($query);
     $stmt->execute(['user_id' => $user_id]);
 
@@ -182,7 +182,7 @@
                 <div class="modal-body">
                     <?php
                     // Récupérer les commandes de l'utilisateur depuis la base de données
-                    $query = "SELECT * FROM gamestoretp.orders WHERE user_id = :user_id ORDER BY created_at DESC";
+                    $query = "SELECT * FROM orders WHERE user_id = :user_id ORDER BY created_at DESC";
                     $stmt = $pdo->prepare($query);
                     $stmt->execute(['user_id' => $user_id]);
                     $commandes = $stmt->fetchAll(PDO::FETCH_ASSOC);

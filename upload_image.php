@@ -31,7 +31,7 @@ if (isset($_FILES['profile_image']) && $_FILES['profile_image']['error'] == UPLO
     if (move_uploaded_file($file_tmp_name, $destination)) {
         // Mettre à jour le chemin de l'image dans la base de données
         $image_url = '/' . $destination; // URL relative
-        $query = "UPDATE gamestoretp.users SET image_url = :image_url WHERE id = :user_id";
+        $query = "UPDATE users SET image_url = :image_url WHERE id = :user_id";
         $stmt = $pdo->prepare($query);
         if ($stmt->execute(['image_url' => $image_url, 'user_id' => $user_id])) {
             $response['success'] = true;

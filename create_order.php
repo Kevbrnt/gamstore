@@ -53,7 +53,7 @@ $pdo->beginTransaction();
 
 try {
     // Insérer la commande dans la table orders
-    $sql = "INSERT INTO gamestoretp.orders (user_id, total_price, status, created_at, retail_id, date_retrait) 
+    $sql = "INSERT INTO orders (user_id, total_price, status, created_at, retail_id, date_retrait) 
             VALUES (:user_id, :total_price, 'VALIDE', NOW(), :retail_id, :date_retrait)";
     $stmt = $pdo->prepare($sql);
     $stmt->execute([
@@ -74,8 +74,8 @@ try {
                    END AS price,
                    games.name,
                    games.image_url
-            FROM gamestoretp.cart
-            JOIN gamestoretp.games ON cart.game_id = games.id
+            FROM cart
+            JOIN games ON cart.game_id = games.id
             WHERE cart.user_id = :user_id";
     $stmt = $pdo->prepare($sql);
     $stmt->execute([':user_id' => $user_id]);
@@ -86,7 +86,7 @@ try {
     }
 
     // Insérer chaque article du panier dans la table order_items
-    $sql = "INSERT INTO gamestoretp.order_items (order_id, game_id, quantity, price) 
+    $sql = "INSERT INTO order_items (order_id, game_id, quantity, price) 
             VALUES (:order_id, :game_id, :quantity, :price)";
     $stmt = $pdo->prepare($sql);
 
@@ -99,7 +99,7 @@ try {
         ]);
 
         // Déduire la quantité achetée du stock
-        $sql = "UPDATE gamestoretp.games SET stock = stock - :quantity WHERE id = :game_id";
+        $sql = "UPDATE games SET stock = stock - :quantity WHERE id = :game_id";
         $stmt_update = $pdo->prepare($sql);
         $stmt_update->execute([
             ':quantity' => $item['quantity'],
@@ -108,7 +108,7 @@ try {
     }
 
     // Supprimer les articles du panier de l'utilisateur
-    $sql = "DELETE FROM gamestoretp.cart WHERE user_id = :user_id";
+    $sql = "DELETE FROM cart WHERE user_id = :user_id";
     $stmt = $pdo->prepare($sql);
     $stmt->execute([':user_id' => $user_id]);
 
@@ -116,7 +116,7 @@ try {
     $pdo->commit();
 
     // Récupérer l'adresse e-mail et le username de l'utilisateur
-    $user_query = $pdo->prepare("SELECT email, username FROM gamestoretp.users WHERE id = :user_id");
+    $user_query = $pdo->prepare("SELECT email, username FROM users WHERE id = :user_id");
     $user_query->execute([':user_id' => $user_id]);
     $user = $user_query->fetch(PDO::FETCH_ASSOC);
 

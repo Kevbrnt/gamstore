@@ -4,8 +4,8 @@ require 'vendor/autoload.php'; // Autoload file for Composer
 
 use MongoDB\Client as MongoClient;
 
-$client = new MongoClient("mongodb://localhost:27017");
-$collection = $client->store->sales;
+$client = require "connect_bdd_mongodb.php";
+$collection = $client->Gamestore->sales;
 
 $cursor = $collection->aggregate([
     [

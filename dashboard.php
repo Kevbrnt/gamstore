@@ -11,9 +11,9 @@ try {
     // Requête pour récupérer les ventes par genre
     $stmt = $pdo->query("
         SELECT games.genre AS genre, COUNT(order_items.id) AS ventes
-        FROM gamestoretp.order_items 
-        JOIN gamestoretp.games ON order_items.game_id = games.id
-        JOIN gamestoretp.orders ON order_items.order_id = orders.id
+        FROM order_items 
+        JOIN games ON order_items.game_id = games.id
+        JOIN orders ON order_items.order_id = orders.id
         WHERE orders.status = 'LIVRE'
         GROUP BY games.genre
         ORDER BY COUNT(order_items.id) DESC

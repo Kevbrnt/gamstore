@@ -4,7 +4,7 @@ include 'connect_bdd.php';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = $_POST['email'];
 
-    $stmt = $pdo->prepare("SELECT id FROM gamestoretp.users WHERE email = :email");
+    $stmt = $pdo->prepare("SELECT id FROM users WHERE email = :email");
     $stmt->bindParam(':email', $email);
     $stmt->execute();
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
