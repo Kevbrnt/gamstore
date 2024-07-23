@@ -153,7 +153,7 @@ $games = $stmt->fetchAll(PDO::FETCH_ASSOC);
             </form>
 
             <br>
-            <div class="row ">
+            <div class="articles-container">
                 <?php
                 // Vérifier s'il y a des résultats
                 if ($stmt->rowCount() > 0) {
@@ -163,7 +163,7 @@ $games = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         $finalPrice = $hasDiscount ? $row['promotion_price'] : $row['price'];
                         $isOutOfStock = $row['stock'] <= 0;
 
-                        echo "<div class='product-container card'>";
+                        echo "<div class='article product-container card'>";
                         if ($hasDiscount) {
                             echo "<div class='promo-badge'></div>";
                         }
@@ -209,7 +209,7 @@ $games = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         echo "</div>";
                     }
                 } else {
-                    echo "<p class='col-md-10' style='color: white;'>0 résultat trouvé</p>";
+                    echo "<p class='no-results col-md-10' style='color: white;'>0 résultat trouvé</p>";
                 }
                 ?>
             </div></div></div></div>

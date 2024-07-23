@@ -476,12 +476,39 @@ tbody tr ,td {
         padding: 0;
         margin-top: 50%;
     }
-    .product-container {
-        display: block;
-        flex-direction: column;
+}
+
+.articles-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.article {
+    flex: 0 1 100%;
+    margin-bottom: 20px;
+}
+
+@media screen and (min-width: 500px) {
+    .article {
+        flex: 0 1 100%;
     }
-    .product-container img{
-        display: none;
-        flex-direction: column;
+}
+
+@media screen and (min-width: 900px) {
+    .article {
+        flex: 0 1 calc(50% - 10px);
     }
+}
+
+@media screen and (min-width: 1200px) {
+    .article {
+        flex: 0 1 calc(25% - 15px);
+    }
+}
+
+.no-results {
+    width: 100%;
+    color: white;
+    text-align: center;
 }
