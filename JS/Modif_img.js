@@ -1,8 +1,6 @@
 $(document).ready(function() {
-    // Gérer le soumission du formulaire de téléchargement d'image
     $('#upload-image-form').submit(function(e) {
         e.preventDefault();
-
         var formData = new FormData(this);
 
         $.ajax({
@@ -14,35 +12,32 @@ $(document).ready(function() {
             processData: false,
             success: function(response) {
                 if (response.success) {
-                    // Mettre à jour l'image de profil
-                    $('#profileImage').attr('src', response.image_url);
+                    // Utiliser l'API pour l'URL de l'image
+                    var apiImageUrl = API_URL + '?key=' + API_KEY + '&image=' + encodeURIComponent(response.image_url);
+                    $('#profileImage').attr('src', apiImageUrl);
 
-                    // Afficher la modal avec le message de succès
-                    $('#uploadModal').modal('hide'); // Fermer la modal d'upload
+                    $('#uploadModal').modal('hide');
                     $('#modal-message').text(response.message);
-                    $('#successModal').modal('show'); // Modal de succès
+                    $('#successModal').modal('show');
 
-                    // Cacher le formulaire de téléchargement si besoin
                     $('#upload-image-form').hide();
-                    $('#changeImageButton').show(); // Afficher le bouton "Changer d'image"
+                    $('#changeImageButton').show();
                 } else {
-                    // Afficher la modal avec le message d'erreur
-                    $('#uploadModal').modal('hide'); // Fermer la modal d'upload
+                    $('#uploadModal').modal('hide');
                     $('#modal-message').text(response.message);
-                    $('#errorModal').modal('show'); // Modal d'erreur
+                    $('#errorModal').modal('show');
                 }
             },
             error: function() {
-                $('#uploadModal').modal('hide'); // Fermer la modal d'upload
+                $('#uploadModal').modal('hide');
                 $('#modal-message').text('Erreur lors de la requête AJAX.');
-                $('#errorModal').modal('show'); // Modal d'erreur générique
+                $('#errorModal').modal('show');
             }
         });
     });
 
-    // Gérer le clic sur le bouton "Changer d'image"
     $('#changeImageButton').click(function() {
-        $('#upload-image-form').show(); // Afficher le formulaire de téléchargement
-        $(this).hide(); // Cacher le bouton "Changer d'image"
+        $('#upload-image-form').show();
+        $(this).hide();
     });
 });

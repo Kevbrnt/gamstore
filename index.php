@@ -1,7 +1,7 @@
 <?php
 session_start();
 include 'connect_bdd.php';  // Connexion à la base de données
-
+require 'config.php';
 // Obtenir les informations de la table retrait
 $sql = "
     SELECT *
@@ -22,6 +22,12 @@ $retails = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <title>Accueil</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://unpkg.com/@twicpics/components@latest/dist/twicpics-components.js"></script>
+    <script>
+        TwicPics.setup({
+            domain: "https://gamestore.twic.pics/images/"
+        });
+    </script>
     <link rel="shortcut icon" type="image/png" href="/asset/favicon.png"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer"/>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
@@ -155,8 +161,8 @@ LIMIT 5";
                         <div class="col-md-2">
                             <div class="card">
                                 ${promoLogo}
-                                <img src="${game.image_url}" class="card-img-top" alt="${game.name}" style="width:400px;height:400px;">
-                                <div class="card-body"  style="height: 150px">
+                                        <twic-img src="${game.image_url}" alt="${game.name}" style="width:400px;height:400px;"></twic-img>
+                                     <div class="card-body">
                                     <h5 class="card-title">${game.name}</h5>
                                     <p class="card-text ${priceClass}">${priceToShow.toFixed(2)} €</p>
                                 </div>

@@ -7,6 +7,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mon Espace</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/@twicpics/components@latest/dist/twicpics-components.js"></script>
+    <script>
+        TwicPics.setup({
+            domain: "https://gamestore.twic.pics/images/"
+        });
+    </script>
     <link rel="shortcut icon" type="image/png" href="/asset/favicon.png"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer"/>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
@@ -39,7 +45,15 @@
         echo "<div class='text-center my-4'>";
         // Afficher l'image de profil si elle existe, sinon afficher un placeholder
         $profileImage = !empty($user['image_url']) ? $user['image_url'] : 'asset/profils/defaut.png';
-        echo "<img id='profileImage' src='{$profileImage}' alt='Image de profil' class='rounded-circle' style='width: 80px; height: 80px; display: inline-flex'>";
+        echo "<twic-img
+    id='profileImage'
+    src='<?php echo basename($profileImage); ?>'
+    alt='Image de profil'
+    class='rounded-circle'
+    mode='cover'
+    ratio='1'
+    style='width: 80px; height: 80px; display: inline-flex'
+></twic-img>";
         echo "<br><br>";
         echo "<button id='changeImageButton' class='btn btn-primary' data-toggle='modal' data-target='#uploadModal'>Changer d'image</button>";
         echo "<br><br>";

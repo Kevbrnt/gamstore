@@ -1,5 +1,6 @@
 <?php
 session_start();
+require_once 'config.php'; // Assurez-vous que ce fichier contient votre clé API
 include 'connect_bdd.php';
 
 // Vérifier si l'utilisateur est connecté
@@ -12,46 +13,40 @@ $genreStmt->execute();
 $genres = $genreStmt->fetchAll(PDO::FETCH_COLUMN);
 
 // Récupérer toutes les plateformes
-$platformQuery = "SELECT platform FROM games ORDER BY platform";
+$platformQuery = "SELECT DISTINCT platform FROM games ORDER BY platform";
 $platformStmt = $pdo->prepare($platformQuery);
 $platformStmt->execute();
 $console = $platformStmt->fetchAll(PDO::FETCH_COLUMN);
 
 // Initialiser les filtres
-$highestPrice = isset($_GET['highestPrice']) ;
+$highestPrice = 100; // Vous pouvez ajuster cette valeur ou la calculer dynamiquement
 $genre = isset($_GET['genre']) ? htmlspecialchars($_GET['genre']) : '';
 $platform = isset($_GET['platform']) ? htmlspecialchars($_GET['platform']) : '';
-$maxPrice = isset($_GET['max_price']) ? filter_var($_GET['max_price'], FILTER_VALIDATE_FLOAT) : 0;
+$maxPrice = isset($_GET['max_price']) ? filter_var($_GET['max_price'], FILTER_VALIDATE_FLOAT) : $highestPrice;
 
 // SQL query pour récupérer les jeux
 $sql = "SELECT * FROM games WHERE 1=1";
+$params = [];
 
 // Ajouter des filtres
 if ($genre) {
     $sql .= " AND genre = :genre";
+    $params[':genre'] = $genre;
 }
 
 if ($maxPrice > 0) {
     $sql .= " AND (promotion_price IS NULL AND price <= :max_price OR (promotion_price IS NOT NULL AND promotion_price <= :max_price))";
+    $params[':max_price'] = $maxPrice;
 }
+
 if ($platform) {
     $sql .= " AND platform = :platform";
+    $params[':platform'] = $platform;
 }
 
 $stmt = $pdo->prepare($sql);
 
-if ($genre) {
-    $stmt->bindParam(':genre', $genre, PDO::PARAM_STR);
-}
-
-if ($maxPrice > 0) {
-    $stmt->bindParam(':max_price', $maxPrice, PDO::PARAM_STR);
-}
-if ($platform) {
-    $stmt->bindParam(':platform', $platform, PDO::PARAM_STR);
-}
-
-if (!$stmt->execute()) {
+if (!$stmt->execute($params)) {
     die("Erreur lors de l'exécution de la requête : " . $stmt->errorInfo()[2]);
 }
 
@@ -74,7 +69,6 @@ $games = $stmt->fetchAll(PDO::FETCH_ASSOC);
             position: relative;
             display: inline-block;
         }
-
         .out-of-stock {
             position: absolute;
             top: 0;
@@ -88,19 +82,14 @@ $games = $stmt->fetchAll(PDO::FETCH_ASSOC);
             font-weight: bold;
             pointer-events: none;
         }
-
         .out-of-stock .text {
             color: white;
             font-weight: bold;
         }
-
-        .out-of-stock img {
-            filter: grayscale(100%);
-        }
-
         .product-image {
             width: 400px;
             height: 400px;
+            object-fit: cover;
         }
     </style>
 </head>
@@ -111,13 +100,12 @@ $games = $stmt->fetchAll(PDO::FETCH_ASSOC);
 </header>
 
 <div class="content4">
-    <div class="container3" style="color: black;">
+    <div class="container3" style="color: black;flex-direction: column;">
         <div class="content4">
-
-            <!-- Formulaire de recherche par genre -->
-            <form method="GET" class="col">
+            <!-- Formulaires de recherche -->
+            <form method="GET" class="mb-4">
                 <div class="form-row">
-                    <div class="col">
+                    <div class="col-md-3 mb-3">
                         <label for="genre">Genre:</label>
                         <select id="genre" name="genre" class="form-control">
                             <option value="">Tous les genres</option>
@@ -127,48 +115,45 @@ $games = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                 </option>
                             <?php endforeach; ?>
                         </select>
-                    </div></div>
-            </form>
-
-                        <!-- Formulaire de recherche par plateformes -->
-                        <form method="GET" class="col">
-                            <div class="form-row">
-                                <div class="col">
-                                    <label for="platform">Plateformes:</label>
-                                    <select id="platform" name="platform" class="form-control">
-                                        <option value="">Tous les plateformes</option>
-                                        <?php foreach ($console as $c): ?>
-                                            <option value="<?php echo htmlspecialchars($c); ?>" <?php echo $c === $console ? 'selected' : ''; ?>>
-                                                <?php echo htmlspecialchars($c); ?>
-                                            </option>
-                                        <?php endforeach; ?>
-                                    </select>
-                                </div></div>
-
-                        <br>
+                    </div>
+                    <div class="col-md-3 mb-3">
+                        <label for="platform">Plateformes:</label>
+                        <select id="platform" name="platform" class="form-control">
+                            <option value="">Toutes les plateformes</option>
+                            <?php foreach ($console as $c): ?>
+                                <option value="<?php echo htmlspecialchars($c); ?>" <?php echo $c === $platform ? 'selected' : ''; ?>>
+                                    <?php echo htmlspecialchars($c); ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                    <div class="col-md-3 mb-3">
                         <label for="priceRange">Prix maximum:</label>
-                        <input type="range" name="max_price" id="priceRange" class="form-control-range" min="0" max="<?php echo htmlspecialchars($highestPrice) ?>" value="<?php echo htmlspecialchars($maxPrice); ?>" oninput="updatePriceLabel(this.value)">
+                        <input type="range" name="max_price" id="priceRange" class="form-control-range" min="0" max="<?php echo htmlspecialchars($highestPrice); ?>" value="<?php echo htmlspecialchars($maxPrice); ?>" oninput="updatePriceLabel(this.value)">
                         <label class="color_write">Prix: <span id="priceLabel"><?php echo htmlspecialchars($maxPrice); ?></span>€</label>
-                        <div><button type="submit" class="btn btn-primary">Rechercher</button></div>
+                    </div>
+                    <div class="col-md-3 mb-3 d-flex align-items-end">
+                        <button type="submit" class="btn btn-primary">Rechercher</button>
+                    </div>
+                </div>
             </form>
 
-            <br>
             <div class="articles-container">
                 <?php
-                // Vérifier s'il y a des résultats
-                if ($stmt->rowCount() > 0) {
+                if (count($games) > 0) {
                     foreach ($games as $row) {
-                        // Calculer la remise
                         $hasDiscount = !empty($row['promotion_price']) && $row['promotion_price'] < $row['price'];
                         $finalPrice = $hasDiscount ? $row['promotion_price'] : $row['price'];
                         $isOutOfStock = $row['stock'] <= 0;
+                        $imageUrl = htmlspecialchars($row['image_url']);
+                        $apiUrl = "https://api.example.com/images?key=" . API_KEY . "&image=" . urlencode($imageUrl);
 
                         echo "<div class='article product-container card'>";
                         if ($hasDiscount) {
                             echo "<div class='promo-badge'></div>";
                         }
                         echo "<div class='out-of-stock' style='display: " . ($isOutOfStock ? 'block' : 'none') . ";'><div class='text'>Rupture de stock</div></div>";
-                        echo "<img src='" . htmlspecialchars($row['image_url']) . "' class='product-image' alt='" . htmlspecialchars($row['name']) . "' data-toggle='modal' data-target='#detailsModal" . htmlspecialchars($row['id']) . "'>";
+                        echo "<img src='$apiUrl' class='product-image' alt='" . htmlspecialchars($row['name']) . "' data-toggle='modal' data-target='#detailsModal" . htmlspecialchars($row['id']) . "' onerror=\"this.onerror=null; this.src='/path/to/fallback-image.jpg';\">";
                         echo "</div>";
 
                         // Modal pour chaque jeu
@@ -182,7 +167,7 @@ $games = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         echo "</button>";
                         echo "</div>";
                         echo "<div class='modal-body'>";
-                        echo "<img src='" . htmlspecialchars($row['image_url']) . "' class='card-img-top' alt='" . htmlspecialchars($row['name']) . "'>";
+                        echo "<img src='$apiUrl' class='card-img-top' alt='" . htmlspecialchars($row['name']) . "' onerror=\"this.onerror=null; this.src='/path/to/fallback-image.jpg';\">";
                         echo "<p><strong>Description:</strong> " . htmlspecialchars($row['description']) . "</p>";
                         echo "<p><strong>Genre:</strong> " . htmlspecialchars($row['genre']) . "</p>";
                         echo "<p><strong>PEGI:</strong> " . htmlspecialchars($row['pegi']) . "</p>";
@@ -212,8 +197,10 @@ $games = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     echo "<p class='no-results col-md-10' style='color: white;'>0 résultat trouvé</p>";
                 }
                 ?>
-            </div></div></div></div>
-
+            </div>
+        </div>
+    </div>
+</div>
 
 <!-- Scripts -->
 <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
@@ -235,7 +222,9 @@ $games = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     window.onload = function() {
         const priceRange = document.getElementById('priceRange');
-        updatePriceLabel(priceRange.value);
+        if (priceRange) {
+            updatePriceLabel(priceRange.value);
+        }
     };
 
     $(document).ready(function() {
@@ -261,7 +250,6 @@ $games = $stmt->fetchAll(PDO::FETCH_ASSOC);
             });
         });
 
-        // Affichage du modal au clic sur l'image
         $('.product-image').click(function() {
             const modalId = $(this).data('target');
             $(modalId).modal('show');
@@ -278,7 +266,6 @@ $games = $stmt->fetchAll(PDO::FETCH_ASSOC);
     });
 </script>
 
-<!-- Footer -->
 <footer>
     <?php require "footer.php"; ?>
 </footer>
