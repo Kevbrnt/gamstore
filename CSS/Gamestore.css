@@ -480,4 +480,7 @@ tbody tr ,td {
         display: block;
         flex-direction: column;
     }
+    .row {
+        display: none;
+    }
 }
