@@ -10,11 +10,13 @@ GameStore est une application web de vente de jeux vidéo développée dans le c
 2. [Installation](#installation)
 3. [Configuration](#configuration)
 4. [Utilisation](#utilisation)
-5. [Workflow Git](#workflow-git)
-6. [Structure du Projet](#structure-du-projet)
-7. [Technologies Utilisées](#technologies-utilisées)
-8. [Auteurs](#auteurs)
-9. [Licence](#licence)
+5. [Utilisation Web](#utilisation-web)
+6. [Gestion de projet](#gestion-de-projet)
+7. [Workflow Git](#workflow-git)
+8. [Structure du Projet](#structure-du-projet)
+9. [Technologies Utilisées](#technologies-utilisées)
+10. [Auteurs](#auteurs)
+
 
 ## Prérequis
 
@@ -58,6 +60,20 @@ données dans les dossiers:
 - Employé : username: Gamestore@Employés, password: Gamestore
 - Admin : username: Gamestore@Admin, password: Gamestore
 
+## Utilisation Web
+1. rendez-vous ici https://gamestoreprojet.fly.dev/ pour visualiser le site en version web
+2. !! Attention !! il se peut que vous soyez déconecter tous seul actualiser la page jusqu'à être de nouveau connecter.
+3. Utilisez les identifiants suivants pour tester les différents rôles :
+- Client : username: Gamestore@Visiteur, password: Gamestore
+- Employé : username: Gamestore@Employés, password: Gamestore
+- Admin : username: Gamestore@Admin, password: Gamestore
+
+## Gestion de projet
+1. La gestion de projet a était réalisé avec :
+ - Trellio => https://trello.com/invite/b/6671ad7bc622a55b92f0b37f/ATTI3db01a8a63bf400c24c3ce8bc1135a53437571CB/mon-tp
+ - draw.io => 
+ - Figma => https://www.figma.com/community/file/1397506796091956804/tp-gamestore
+   
 ## Workflow Git
 
 Nous suivons un workflow Git basé sur deux branches principales :
