@@ -60,7 +60,7 @@ données dans les dossiers:
 
 ## Utilisation Web
 1. rendez-vous ici https://gamestoreprojet.fly.dev/ pour visualiser le site en version web
-2. !! Attention !! il se paut que vous soyez déconecter tous seul actualiser la page jusqu'à être de nouveau connecter.
+2. !! Attention !! il se peut que vous soyez déconecter tous seul actualiser la page jusqu'à être de nouveau connecter.
 3. Utilisez les identifiants suivants pour tester les différents rôles :
 - Client : username: Gamestore@Visiteur, password: Gamestore
 - Employé : username: Gamestore@Employés, password: Gamestore
