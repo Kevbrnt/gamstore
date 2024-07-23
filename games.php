@@ -59,9 +59,7 @@ $games = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Boutique</title>
-    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="shortcut icon" type="image/png" href="/asset/favicon.png"/>
-    <script src="https://cdn.jsdelivr.net/npm/@twicpics/components@1.4.1/dist/twicpics.min.js" async></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer"/>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="CSS/Gamestore.css">
@@ -91,6 +89,14 @@ $games = $stmt->fetchAll(PDO::FETCH_ASSOC);
             width: 400px;
             height: 400px;
         }
+        .search-form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .search-form .btn {
+            margin-top: 10px;
+        }
     </style>
 </head>
 
@@ -103,7 +109,7 @@ $games = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <div class="container3">
         <div class="content4">
             <!-- Formulaires de recherche -->
-            <form method="GET" class="mb-4" ">
+            <form method="GET" class="mb-4 search-form">
                 <div class="form-row">
                     <div class="mb-3 col-12">
                         <label for="genre">Genre:</label>
@@ -132,7 +138,7 @@ $games = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         <input type="range" name="max_price" id="priceRange" class="form-control-range" min="0" max="<?php echo htmlspecialchars($highestPrice); ?>" value="<?php echo htmlspecialchars($maxPrice); ?>" oninput="updatePriceLabel(this.value)">
                         <label class="color_write">Prix: <span id="priceLabel"><?php echo htmlspecialchars($maxPrice); ?></span>€</label>
                     </div>
-                    <div style="display: inline-flex">
+                    <div class="mb-3 d-flex align-items-end">
                         <button type="submit" class="btn btn-primary">Rechercher</button>
                     </div>
                 </div>
@@ -146,14 +152,15 @@ $games = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         $finalPrice = $hasDiscount ? $row['promotion_price'] : $row['price'];
                         $isOutOfStock = $row['stock'] <= 0;
                         $imageUrl = htmlspecialchars($row['image_url']);
-                        $apiUrl = "?key=" . API_KEY . "&image=" . urlencode($imageUrl);
+                        $sourceUrlBase = "https://gamestoreprojet.fly.dev/asset/Jeux";
+                        $imagePath = $sourceUrlBase . '/' . $imageUrl;
 
                         echo "<div class='article product-container card'>";
                         if ($hasDiscount) {
                             echo "<div class='promo-badge'></div>";
                         }
                         echo "<div class='out-of-stock' style='display:" . ($isOutOfStock ? 'block' : 'none') . ";'><div class='text'>Rupture de stock</div></div>";
-                        echo "<img src='" . $apiUrl . "'  alt='" . htmlspecialchars($row['name']) . "' data-toggle='modal' data-target='#detailsModal" . htmlspecialchars($row['id']) . "' style='height: 300px; width: 280px;' ></img>";
+                        echo "<img src='" . $imagePath . "' alt='" . htmlspecialchars($row['name']) . "' class='product-image' data-toggle='modal' data-target='#detailsModal" . htmlspecialchars($row['id']) . "' />";
                         echo "</div>";
 
                         // Modal pour chaque jeu
@@ -167,7 +174,7 @@ $games = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         echo "</button>";
                         echo "</div>";
                         echo "<div class='modal-body'>";
-                        echo "<img src='" . $apiUrl."' class='card-img-top' alt='" . htmlspecialchars($row['name']) . "'><img>";
+                        echo "<img src='" . $imagePath . "' class='card-img-top' alt='" . htmlspecialchars($row['name']) . "' />";
                         echo "<p><strong>Description:</strong> " . htmlspecialchars($row['description']) . "</p>";
                         echo "<p><strong>Genre:</strong> " . htmlspecialchars($row['genre']) . "</p>";
                         echo "<p><strong>PEGI:</strong> " . htmlspecialchars($row['pegi']) . "</p>";
@@ -197,7 +204,10 @@ $games = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     echo "<p class='no-results col-md-10' style='color: white;'>0 résultat trouvé</p>";
                 }
                 ?>
-            </div></div></div></div>
+            </div>
+        </div>
+    </div>
+</div>
 
 <!-- Scripts -->
 <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
