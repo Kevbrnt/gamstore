@@ -19,7 +19,7 @@ $platformStmt->execute();
 $console = $platformStmt->fetchAll(PDO::FETCH_COLUMN);
 
 // Initialiser les filtres
-$highestPrice = 100; // Vous pouvez ajuster cette valeur ou la calculer dynamiquement
+$highestPrice = 200; // Vous pouvez ajuster cette valeur ou la calculer dynamiquement
 $genre = isset($_GET['genre']) ? htmlspecialchars($_GET['genre']) : '';
 $platform = isset($_GET['platform']) ? htmlspecialchars($_GET['platform']) : '';
 $maxPrice = isset($_GET['max_price']) ? filter_var($_GET['max_price'], FILTER_VALIDATE_FLOAT) : $highestPrice;
@@ -89,7 +89,6 @@ $games = $stmt->fetchAll(PDO::FETCH_ASSOC);
         .product-image {
             width: 400px;
             height: 400px;
-            object-fit: cover;
         }
     </style>
 </head>
@@ -100,12 +99,12 @@ $games = $stmt->fetchAll(PDO::FETCH_ASSOC);
 </header>
 
 <div class="content4">
-    <div class="container3" style="color: black;flex-direction: column;">
+    <div class="container3">
         <div class="content4">
             <!-- Formulaires de recherche -->
-            <form method="GET" class="mb-4">
+            <form method="GET" class="mb-4" ">
                 <div class="form-row">
-                    <div class="col-md-3 mb-3">
+                    <div class="mb-3 col-12">
                         <label for="genre">Genre:</label>
                         <select id="genre" name="genre" class="form-control">
                             <option value="">Tous les genres</option>
@@ -116,7 +115,7 @@ $games = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             <?php endforeach; ?>
                         </select>
                     </div>
-                    <div class="col-md-3 mb-3">
+                    <div class="col-12 mb-3">
                         <label for="platform">Plateformes:</label>
                         <select id="platform" name="platform" class="form-control">
                             <option value="">Toutes les plateformes</option>
@@ -127,12 +126,12 @@ $games = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             <?php endforeach; ?>
                         </select>
                     </div>
-                    <div class="col-md-3 mb-3">
+                    <div class="mb-3 col-12">
                         <label for="priceRange">Prix maximum:</label>
                         <input type="range" name="max_price" id="priceRange" class="form-control-range" min="0" max="<?php echo htmlspecialchars($highestPrice); ?>" value="<?php echo htmlspecialchars($maxPrice); ?>" oninput="updatePriceLabel(this.value)">
                         <label class="color_write">Prix: <span id="priceLabel"><?php echo htmlspecialchars($maxPrice); ?></span>€</label>
                     </div>
-                    <div class="col-md-3 mb-3 d-flex align-items-end">
+                    <div class="mb-3 d-flex align-items-end">
                         <button type="submit" class="btn btn-primary">Rechercher</button>
                     </div>
                 </div>
@@ -146,14 +145,14 @@ $games = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         $finalPrice = $hasDiscount ? $row['promotion_price'] : $row['price'];
                         $isOutOfStock = $row['stock'] <= 0;
                         $imageUrl = htmlspecialchars($row['image_url']);
-                        $apiUrl = "https://api.example.com/images?key=" . API_KEY . "&image=" . urlencode($imageUrl);
+                        $apiUrl = "https://gamestore.twic.pics/images?key=" . API_KEY . "&image=" . urlencode($imageUrl);
 
                         echo "<div class='article product-container card'>";
                         if ($hasDiscount) {
                             echo "<div class='promo-badge'></div>";
                         }
-                        echo "<div class='out-of-stock' style='display: " . ($isOutOfStock ? 'block' : 'none') . ";'><div class='text'>Rupture de stock</div></div>";
-                        echo "<img src='$apiUrl' class='product-image' alt='" . htmlspecialchars($row['name']) . "' data-toggle='modal' data-target='#detailsModal" . htmlspecialchars($row['id']) . "' onerror=\"this.onerror=null; this.src='/path/to/fallback-image.jpg';\">";
+                        echo "<div class='out-of-stock' style='display:" . ($isOutOfStock ? 'block' : 'none') . ";'><div class='text'>Rupture de stock</div></div>";
+                        echo "<twic-img src='" . $apiUrl . "'  alt='" . htmlspecialchars($row['name']) . "' data-toggle='modal' data-target='#detailsModal" . htmlspecialchars($row['id']) . "' style='height: 300px; width: 280px;' ></twic-img>";
                         echo "</div>";
 
                         // Modal pour chaque jeu
@@ -167,7 +166,7 @@ $games = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         echo "</button>";
                         echo "</div>";
                         echo "<div class='modal-body'>";
-                        echo "<img src='$apiUrl' class='card-img-top' alt='" . htmlspecialchars($row['name']) . "' onerror=\"this.onerror=null; this.src='/path/to/fallback-image.jpg';\">";
+                        echo "<twic-img src='" . $apiUrl . "' class='card-img-top' alt='" . htmlspecialchars($row['name']) . "'></twic-img>";
                         echo "<p><strong>Description:</strong> " . htmlspecialchars($row['description']) . "</p>";
                         echo "<p><strong>Genre:</strong> " . htmlspecialchars($row['genre']) . "</p>";
                         echo "<p><strong>PEGI:</strong> " . htmlspecialchars($row['pegi']) . "</p>";
@@ -197,10 +196,7 @@ $games = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     echo "<p class='no-results col-md-10' style='color: white;'>0 résultat trouvé</p>";
                 }
                 ?>
-            </div>
-        </div>
-    </div>
-</div>
+            </div></div></div></div>
 
 <!-- Scripts -->
 <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>

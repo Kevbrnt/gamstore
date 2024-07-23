@@ -480,8 +480,6 @@ tbody tr ,td {
 
 .articles-container {
     display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
 }
 
 .article {
