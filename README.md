@@ -39,12 +39,11 @@ composer install
 données dans les dossiers:
 5. Configurez PostgresSQL :
  - Créer une base de données nommée `gamestoretp`
- - Importez les données dans le fichier postgresSQL
+ - Créer les tables indiquez dans le dossier diagramme BDD
 
 5. Configurez MongoDB :
 - Créez une base de données nommée `Gamestore`
 - Créer une collection nommée `sales`
-- Struturé le tous avec 
 
 ## Configuration
 
