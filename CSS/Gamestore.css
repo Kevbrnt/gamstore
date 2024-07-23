@@ -480,7 +480,8 @@ tbody tr ,td {
         display: block;
         flex-direction: column;
     }
-    .row {
+    .product-container img{
         display: none;
+        flex-direction: column;
     }
 }
