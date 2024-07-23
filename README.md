@@ -35,13 +35,14 @@ composer install
 
 4. Importez la base de données :
 données dans les dossiers:
-5. Configurez MySql :
+5. Configurez PostgresSQL :
  - Créer une base de données nommée `gamestoretp`
- - Importez les données dans le fichier MySql
+ - Importez les données dans le fichier postgresSQL
 
 5. Configurez MongoDB :
-- Créez une base de données nommée `gamestore`
-- Importez les données dans le fichier MongoDB
+- Créez une base de données nommée `Gamestore`
+- Créer une collection nommée `sales`
+- Struturé le tous avec 
 
 ## Configuration
 
