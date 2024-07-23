@@ -68,9 +68,9 @@ données dans les dossiers:
 
 ## Gestion de projet
 1. La gestion de projet a était réalisé avec :
- - Trellio => 
+ - Trellio => https://trello.com/invite/b/6671ad7bc622a55b92f0b37f/ATTI3db01a8a63bf400c24c3ce8bc1135a53437571CB/mon-tp
  - draw.io =>
- - Figma => https://www.figma.com/embed?embed_host=share&url=https%3A%2F%2Fwww.figma.com%2Fproto%2FKhrSEx4UK4m1yGRHcmuNHL%2FTP-Gamestore%3Fnode-id%3D226-2114%26t%3DKUuppvLjMVgcJZCn-1%26scaling%3Dscale-down%26content-scaling%3Dfixed%26page-id%3D224%253A296%26starting-point-node-id%3D226%253A2114" allowfullscreen>(https://www.figma.com/design/FohSgP3SzZErParSxwvCWg/TP-Gamestore-(Community)?node-id=0-1&t=Lm51Gg2zaw9JSS6e-1)
+ - Figma => https://www.figma.com/community/file/1397506796091956804/tp-gamestore
    
 ## Workflow Git
 
