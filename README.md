@@ -98,7 +98,7 @@ master/
 ├── composer.json
 ├── fichiers php
 └── README.md
-Copy
+
 ## Technologies Utilisées
 
 - PHP 7.4
