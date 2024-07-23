@@ -70,7 +70,7 @@ données dans les dossiers:
 1. La gestion de projet a était réalisé avec :
  - Trellio => 
  - draw.io =>
- - Figma => <iframe style="border: 1px solid rgba(0, 0, 0, 0.1);" width="800" height="450" src="https://www.figma.com/embed?embed_host=share&url=https%3A%2F%2Fwww.figma.com%2Fproto%2FKhrSEx4UK4m1yGRHcmuNHL%2FTP-Gamestore%3Fnode-id%3D226-2114%26t%3DKUuppvLjMVgcJZCn-1%26scaling%3Dscale-down%26content-scaling%3Dfixed%26page-id%3D224%253A296%26starting-point-node-id%3D226%253A2114" allowfullscreen></iframe>
+ - Figma => https://www.figma.com/embed?embed_host=share&url=https%3A%2F%2Fwww.figma.com%2Fproto%2FKhrSEx4UK4m1yGRHcmuNHL%2FTP-Gamestore%3Fnode-id%3D226-2114%26t%3DKUuppvLjMVgcJZCn-1%26scaling%3Dscale-down%26content-scaling%3Dfixed%26page-id%3D224%253A296%26starting-point-node-id%3D226%253A2114" allowfullscreen>(https://www.figma.com/design/FohSgP3SzZErParSxwvCWg/TP-Gamestore-(Community)?node-id=0-1&t=Lm51Gg2zaw9JSS6e-1)
    
 ## Workflow Git
 
