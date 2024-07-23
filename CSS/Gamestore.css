@@ -357,7 +357,6 @@ tbody tr ,td {
         transform: scale(1);  /* Retour à la taille normale */
     }
 }
-/* CSS/Gamestore.css */
 
 /* Styles pour les cartes du panier */
 .card-container {
@@ -476,5 +475,9 @@ tbody tr ,td {
     footer {
         padding: 0;
         margin-top: 50%;
+    }
+    .product-container {
+        display: block;
+        flex-direction: column;
     }
 }
