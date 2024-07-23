@@ -71,7 +71,7 @@ données dans les dossiers:
 ## Gestion de projet
 1. La gestion de projet a était réalisé avec :
  - Trellio => https://trello.com/invite/b/6671ad7bc622a55b92f0b37f/ATTI3db01a8a63bf400c24c3ce8bc1135a53437571CB/mon-tp
- - draw.io => 
+ - draw.io => dans `main` / dossier Diagramme BDD
  - Figma => https://www.figma.com/community/file/1397506796091956804/tp-gamestore
    
 ## Workflow Git
