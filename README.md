@@ -20,9 +20,9 @@ GameStore est une application web de vente de jeux vidéo développée dans le c
 
 ## Prérequis
 
-- PHP 7.4 ou supérieur
-- MySQL 5.7 ou supérieur
-- MongoDB 4.4 ou supérieur
+- PHP 8.2 ou supérieur
+- PostgreSQL 16 (gérer par Supabase)
+- MongoDB 4.4 ou supérieur (gérer par MongoDB Compass)
 - Composer
 - Serveur web (Apache ou Nginx)
 
@@ -39,12 +39,11 @@ composer install
 données dans les dossiers:
 5. Configurez PostgresSQL :
  - Créer une base de données nommée `gamestoretp`
- - Importez les données dans le fichier postgresSQL
+ - Créer les tables indiquez dans le dossier diagramme BDD
 
 5. Configurez MongoDB :
 - Créez une base de données nommée `Gamestore`
 - Créer une collection nommée `sales`
-- Struturé le tous avec 
 
 ## Configuration
 
@@ -71,7 +70,7 @@ données dans les dossiers:
 ## Gestion de projet
 1. La gestion de projet a était réalisé avec :
  - Trellio => https://trello.com/invite/b/6671ad7bc622a55b92f0b37f/ATTI3db01a8a63bf400c24c3ce8bc1135a53437571CB/mon-tp
- - draw.io => 
+ - draw.io => dans `main` / dossier Diagramme BDD
  - Figma => https://www.figma.com/community/file/1397506796091956804/tp-gamestore
    
 ## Workflow Git
@@ -82,7 +81,7 @@ Nous suivons un workflow Git basé sur deux branches principales :
 2. `develop` : Branche de développement
 
 ## Structure du Projet
-TP/
+master/
 │
 ├── .github/        
 ├── asset/              
@@ -98,16 +97,16 @@ TP/
 ├── composer.json
 ├── fichiers php
 └── README.md
-Copy
+
 ## Technologies Utilisées
 
-- PHP 7.4
-- MySQL
-- MongoDB
+- PHP 8.2
+- PostgreSQL (gérer par Supabase)
+- MongoDB (gérer par MongoDB Compass)
 - HTML5/CSS3
 - JavaScript (jQuery)
 - Bootstrap 4
 
 ## Auteurs
 
-- Kevin BRONET - Développement initial
+- Kevin BRONET
