@@ -25,7 +25,7 @@ $retails = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <script src="https://unpkg.com/@twicpics/components@latest/dist/twicpics-components.js"></script>
     <script>
         TwicPics.setup({
-            domain: "https://gamestore.twic.pics/images/"
+            domain: "https://gamestore.twic.pics/images"
         });
     </script>
     <link rel="shortcut icon" type="image/png" href="/asset/favicon.png"/>

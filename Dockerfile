@@ -16,6 +16,7 @@ RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - \
     && apt-get install -y nodejs \
     && rm -rf /var/lib/apt/lists/*
 
+
 # Installer les extensions PHP nécessaires
 RUN docker-php-ext-install pdo pdo_mysql pdo_pgsql zip pgsql
 RUN pecl install mongodb && docker-php-ext-enable mongodb
@@ -28,6 +29,7 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 
 # Copier les fichiers de l'application
 COPY . /var/www/html/
+COPY . https://gamestore.twic.pics/images/
 
 # Définir les permissions
 RUN chown -R www-data:www-data /var/www/html

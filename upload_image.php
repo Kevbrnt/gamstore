@@ -16,7 +16,7 @@ $response = ['success' => false, 'message' => 'Une erreur s\'est produite.'];
 if (isset($_FILES['profile_image']) && $_FILES['profile_image']['error'] == UPLOAD_ERR_OK) {
     $file_tmp_name = $_FILES['profile_image']['tmp_name'];
     $file_name = basename($_FILES['profile_image']['name']);
-    $upload_dir = 'assets/profiles/' . $user_id . '/';
+    $upload_dir = 'https://gamestore.twic.pics/images/' . $user_id . '/';
 
     if (!file_exists($upload_dir)) {
         mkdir($upload_dir, 0777, true);
