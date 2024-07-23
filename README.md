@@ -82,7 +82,7 @@ Nous suivons un workflow Git basé sur deux branches principales :
 2. `develop` : Branche de développement
 
 ## Structure du Projet
-TP/
+master/
 │
 ├── .github/        
 ├── asset/              
