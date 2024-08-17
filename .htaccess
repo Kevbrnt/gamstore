@@ -1,8 +1,13 @@
-<IfModule mod_rewrite.c>
-    RewriteEngine On
-    RewriteBase /
-    RewriteRule ^index\.php$ - [L]
-    RewriteCond %{REQUEST_FILENAME} !-f
-    RewriteCond %{REQUEST_FILENAME} !-d
-    RewriteRule . /index.php [L]
-</IfModule>
+RewriteEngine On
+RewriteBase /
+
+# Rediriger la racine vers Accueil.php
+RewriteRule ^$ index.php [L]
+
+# Si le fichier ou le répertoire n'existe pas, redirigez vers le contrôleur approprié
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^([^/]+)/?$ src/controllers/$1.php [L]
+
+# Empêcher l'accès direct aux fichiers .php dans les dossiers src et config
+RewriteRule ^(src|config)/ - [F]

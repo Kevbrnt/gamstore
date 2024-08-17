@@ -1,45 +1,17 @@
-# fly.toml app configuration file generated for gamestoreprojet on 2024-07-22T21:58:41+02:00
-#
-# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
-#
-
 app = 'gamestoreprojet'
 primary_region = 'cdg'
 
 [build]
-  dockerfile = 'Dockerfile'
-
-[env]
-DB_HOST = "aws-0-eu-central-1.pooler.supabase.com"
-DB_PORT = "6543"
-DB_NAME = "postgres"
-DB_USER = "postgres.xswqldcbukisjyjezshy"
-MONGODB_URI = "{{.MONGODB_URI}}"
+dockerfile = 'build/Dockerfile'
 
 [http_service]
-  internal_port = 80
-  force_https = true
-
-[[services]]
-  protocol = 'tcp'
-  internal_port = 80
-  processes = ['app']
-
-  [[services.ports]]
-    port = 80
-    handlers = ['http']
-    force_https = true
-
-  [[services.ports]]
-    port = 443
-    handlers = ['tls', 'http']
-
-  [services.concurrency]
-    type = 'connections'
-    hard_limit = 25
-    soft_limit = 20
+internal_port = 80
+force_https = true
+auto_stop_machines = true
+auto_start_machines = true
+min_machines_running = 0
 
 [[vm]]
-  memory = '2gb'
-  cpu_kind = 'shared'
-  cpus = 1
+memory = '2gb'
+cpu_kind = 'shared'
+cpus = 1
