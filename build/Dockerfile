@@ -1,4 +1,4 @@
-FROM php:8.2-apache
+FROM php:8.3-apache
 
 # Installer les dépendances système et les extensions PHP
 RUN apt-get update && apt-get install -y \
@@ -24,16 +24,25 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 # Définir le répertoire de travail
 WORKDIR /var/www/html
 
-# Copier les fichiers de l'application
+# Copier composer.json et composer.lock du dossier build
+COPY build/composer.json build/composer.lock* ./
+
+# Afficher le contenu du répertoire pour le débogage
+RUN ls -la
+
+# Installer les dépendances Composer
+ENV COMPOSER_ALLOW_SUPERUSER=1
+RUN composer install --no-dev --optimize-autoloader --ignore-platform-reqs -vvv
+
+# Copier le reste des fichiers de l'application
 COPY . .
 
 # Définir les permissions
 RUN chown -R www-data:www-data .
 
-# Installer les dépendances Composer et Node.js
-ENV COMPOSER_ALLOW_SUPERUSER=1
-RUN composer install --no-dev --optimize-autoloader \
-    && npm install
+# Installer les dépendances Node.js de production
+COPY build/package.json build/package-lock.json* ./
+RUN npm ci --only=production
 
 # Exposer le port 80
 EXPOSE 80
