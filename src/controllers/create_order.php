@@ -1,61 +1,65 @@
 <?php
+ob_start();
+
+// Configuration des erreurs
+ini_set('display_errors', 0);
+ini_set('log_errors', 1);
+error_reporting(E_ALL);
 
 require __DIR__ . '/../../build/vendor/autoload.php';
-require "../../build/vendor/autoload.php";
+require_once __DIR__ . '/../utils/session_management.php';
+require_once __DIR__ . '/../models/connect_bdd.php';
+
+// Charger les variables d'environnement
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/../../build');
 $dotenv->load();
-
-session_start();
-include '../../src/models/connect_bdd.php';
 
 // Inclure PHPMailer
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
-// Vérifiez que l'utilisateur est connecté
-if (!isset($_SESSION['id'])) {
-    echo json_encode(['error' => 'Vous devez être connecté pour passer une commande.']);
-    exit;
-}
+header('Content-Type: application/json');
 
-$user_id = $_SESSION['id'];
-$total_price = $_POST['total_price'] ?? 0;
-$retail_id = $_POST['retail_id'] ?? null;
-$date_retrait = $_POST['date_retrait'] ?? null;
-
-if ($retail_id === null || $date_retrait === null) {
-    echo json_encode(['error' => 'Veuillez sélectionner un magasin de retrait et une date de retrait.']);
-    exit;
-}
-
-// Valider que la date de retrait est dans un futur proche et ne peut pas être un lundi ou un dimanche
-$date_today = new DateTime();
-$date_retrait = new DateTime($date_retrait);
-$day_of_week = $date_retrait->format('N');
-
-// Vérifier que la date de retrait est dans le futur
-if ($date_retrait <= $date_today) {
-    echo json_encode(['error' => 'La date de retrait doit être dans le futur.']);
-    exit;
-}
-
-// Vérifier que la date de retrait est dans les 7 jours à partir d'aujourd'hui
-$max_date_retrait = (clone $date_today)->modify('+7 days');
-if ($date_retrait > $max_date_retrait) {
-    echo json_encode(['error' => 'La date de retrait doit être dans les 7 jours à partir d\'aujourd\'hui.']);
-    exit;
-}
-
-// Vérifier que la date de retrait n'est pas un lundi ou un dimanche
-if ($day_of_week == 1 || $day_of_week == 7) {
-    echo json_encode(['error' => 'La date de retrait ne peut pas être un lundi ou un dimanche.']);
-    exit;
-}
-
-// Commencer une transaction
-$pdo->beginTransaction();
+$response = ['success' => false, 'message' => ''];
 
 try {
+    // Vérifier que l'utilisateur est connecté
+    $user = getUserSession();
+    if (!$user || !isset($user['id'])) {
+        throw new Exception('Vous devez être connecté pour passer une commande.');
+    }
+
+    $user_id = $user['id'];
+
+    $total_price = filter_input(INPUT_POST, 'total_price', FILTER_VALIDATE_FLOAT);
+    $retail_id = filter_input(INPUT_POST, 'retail_id', FILTER_VALIDATE_INT);
+    $date_retrait = filter_input(INPUT_POST, 'date_retrait', FILTER_SANITIZE_STRING);
+
+    if ($retail_id === false || $date_retrait === false || $total_price === false) {
+        throw new Exception('Données de commande invalides.');
+    }
+
+    // Valider la date de retrait
+    $date_today = new DateTime();
+    $date_retrait = new DateTime($date_retrait);
+    $day_of_week = $date_retrait->format('N');
+
+    if ($date_retrait <= $date_today) {
+        throw new Exception('La date de retrait doit être dans le futur.');
+    }
+
+    $max_date_retrait = (clone $date_today)->modify('+7 days');
+    if ($date_retrait > $max_date_retrait) {
+        throw new Exception('La date de retrait doit être dans les 7 jours à partir d\'aujourd\'hui.');
+    }
+
+    if ($day_of_week == 1 || $day_of_week == 7) {
+        throw new Exception('La date de retrait ne peut pas être un lundi ou un dimanche.');
+    }
+
+    // Commencer une transaction
+    $pdo->beginTransaction();
+
     // Insérer la commande dans la table orders
     $sql = "INSERT INTO orders (user_id, total_price, status, created_at, retail_id, date_retrait) 
             VALUES (:user_id, :total_price, 'VALIDE', NOW(), :retail_id, :date_retrait)";
@@ -64,13 +68,12 @@ try {
         ':user_id' => $user_id,
         ':total_price' => $total_price,
         ':retail_id' => $retail_id,
-        ':date_retrait' => $date_retrait->format('Y-m-d')  // Format correct pour MySQL
+        ':date_retrait' => $date_retrait->format('Y-m-d')
     ]);
 
-    // Obtenir l'ID de la commande nouvellement créée
     $order_id = $pdo->lastInsertId();
 
-    // Récupérer les articles du panier pour cet utilisateur avec les informations supplémentaires
+    // Récupérer les articles du panier
     $sql = "SELECT cart.game_id, cart.quantity, 
                    CASE 
                        WHEN games.promotion_price > 0 THEN games.promotion_price 
@@ -103,12 +106,16 @@ try {
         ]);
 
         // Déduire la quantité achetée du stock
-        $sql = "UPDATE games SET stock = stock - :quantity WHERE id = :game_id";
+        $sql = "UPDATE games SET stock = stock - :quantity WHERE id = :game_id AND stock >= :quantity";
         $stmt_update = $pdo->prepare($sql);
-        $stmt_update->execute([
+        $result = $stmt_update->execute([
             ':quantity' => $item['quantity'],
             ':game_id' => $item['game_id']
         ]);
+
+        if ($stmt_update->rowCount() === 0) {
+            throw new Exception('Stock insuffisant pour le jeu ' . $item['name']);
+        }
     }
 
     // Supprimer les articles du panier de l'utilisateur
@@ -119,73 +126,67 @@ try {
     // Valider la transaction
     $pdo->commit();
 
-    // Récupérer l'adresse e-mail et le username de l'utilisateur
-    $user_query = $pdo->prepare("SELECT email, username FROM users WHERE id = :user_id");
-    $user_query->execute([':user_id' => $user_id]);
-    $user = $user_query->fetch(PDO::FETCH_ASSOC);
+    // Envoyer l'e-mail
+    $mail = new PHPMailer(true);
 
-    if (!$user) {
-        throw new Exception('Utilisateur non trouvé.');
-    }
+    //Configuration Sécurisé
+    $host = $_ENV['HOST_MAIL'];
+    $nameMail = $_ENV["USERNAME_MAIL"];
+    $password = $_ENV["PASSWORD_MAIL"];
+    $port = $_ENV["PORT_MAIL"];
 
-    $user_email = $user['email']; // L'email de l'utilisateur connecté
-    $user_name = $user['username']; // Le username de l'utilisateur
+        // Configurer le serveur SMTP
+        $mail->isSMTP();
+        $mail->Host = $host ;  // Remplacez par le serveur SMTP de votre fournisseur d'email
+        $mail->SMTPAuth = true;
+        $mail->Username = $nameMail; // Remplacez par votre adresse email
+        $mail->Password = $password; // Remplacez par le mot de passe de votre adresse email
+        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+        $mail->Port = $port;
 
-    // Construire la liste des articles commandés pour l'email
+    $mail->setFrom($_ENV["USERNAME_MAIL"], 'Gamestore');
+    $mail->addAddress($user['email'], $user['username']);
+    $mail->isHTML(true);
+    $mail->Subject = 'Confirmation de votre commande';
+
     $items_html = '';
     foreach ($cart_items as $item) {
         $items_html .= "
             <div style='border: 3px solid #ddd; padding: 10px; margin-bottom: 10px;'>
-                <p><strong>{$item['name']}</strong></p>
-                <p>Quantité: {$item['quantity']}</p>
-                <p>Prix unitaire: {$item['price']} €</p>
+                <p><strong>" . htmlspecialchars($item['name']) . "</strong></p>
+                <p>Quantité: " . htmlspecialchars($item['quantity']) . "</p>
+                <p>Prix unitaire: " . htmlspecialchars($item['price']) . " €</p>
             </div>
         ";
     }
 
-    // Créez une instance de PHPMailer
-    $mail = new PHPMailer(true);
-
-    // sécurité .env
-    $name = getenv("USERNAME_MAIL");
-    $password = getenv("PASSWORD_MAIL");
-    $port = getenv("PORT_MAIL");
-
-    // Paramètres du serveur SMTP
-    $mail->isSMTP();
-    $mail->Host       = 'smtp.gmail.com'; // Remplacez par l'adresse de votre serveur SMTP
-    $mail->SMTPAuth   = true;
-    $mail->Username   = $name; // Votre adresse e-mail
-    $mail->Password   = $password; // Votre mot de passe
-    $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-    $mail->Port       = $port;
-
-    // Paramètres de l'e-mail
-    $mail->setFrom('noreply@gamestore.com', 'Gamestore');
-    $mail->addAddress($user_email, $user_name); // Ajout de l'adresse e-mail de l'utilisateur
-
-    $mail->isHTML(true);
-    $mail->Subject = 'Confirmation de votre commande';
-
-    // Corps du message
     $mail->Body = "
-        <h1>Merci pour votre commande, {$user_name} !</h1>
-        <p>Votre commande numéro <strong>{$order_id}</strong> a été reçue avec succès.</p>
-        <p><strong>Total :</strong> {$total_price} €</p>
-        <p><strong>Date de retrait :</strong> {$date_retrait->format('d/m/Y')}</p>
+        <h1>Merci pour votre commande, " . htmlspecialchars($user['username']) . " !</h1>
+        <p>Votre commande numéro <strong>" . htmlspecialchars($order_id) . "</strong> a été reçue avec succès.</p>
+        <p><strong>Total :</strong> " . htmlspecialchars($total_price) . " €</p>
+        <p><strong>Date de retrait :</strong> " . htmlspecialchars($date_retrait->format('d/m/Y')) . "</p>
         <h2>Détails de la commande</h2>
-        {$items_html}
+        " . $items_html . "
         <p>Nous vous enverrons un autre e-mail lorsque votre commande sera prête pour le retrait.</p>
         <p>Merci de nous faire confiance !</p>
         <p>L'équipe GameStore</p>
     ";
 
     $mail->send();
-
-    echo json_encode(['success' => true]);
+    $response['success'] = true;
+    $response['message'] = 'Commande créée et e-mail envoyé avec succès.';
 } catch (Exception $e) {
-    $pdo->rollBack();
-    error_log("Message d'erreur : " . $e->getMessage());
-    echo json_encode(['error' => 'Une erreur est survenue lors de la création de la commande: ' . $e->getMessage()]);
+    if ($pdo->inTransaction()) {
+        $pdo->rollBack();
+    }
+    error_log("Erreur : " . $e->getMessage());
+    $response['message'] = 'Une erreur est survenue : ' . $e->getMessage();
 }
+
+// Nettoyage du tampon de sortie
+ob_end_clean();
+
+// Envoi de la réponse JSON
+echo json_encode($response);
+exit;
 ?>

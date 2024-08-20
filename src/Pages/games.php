@@ -1,11 +1,13 @@
 <?php
 
 require __DIR__ . '/../../build/vendor/autoload.php';
+require_once __DIR__ . '/../utils/session_management.php';
 
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/../../build');
 $dotenv->load();
 
-session_start();
+$user_id = getUserSession();
+
 include_once '../../config/config.php'; // Assurez-vous que ce fichier contient votre clé API
 include '../models/connect_bdd.php'; // bdd Deploy
 
@@ -66,7 +68,7 @@ $games = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Boutique</title>
-    <link rel="shortcut icon" type="image/png" href="/public/asset/favicon.png"/>
+    <link rel="icon" type="image/png" href="../../public/asset/favicon.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer"/>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="../../public/CSS/Gamestore.css">
@@ -96,11 +98,7 @@ $games = $stmt->fetchAll(PDO::FETCH_ASSOC);
             width: 400px;
             height: 400px;
         }
-        .search-form {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
+
         .search-form .btn {
             margin-top: 10px;
         }
@@ -116,9 +114,9 @@ $games = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <div class="container3">
         <div class="content4">
             <!-- Formulaires de recherche -->
-            <form method="GET" class="mb-4 search-form">
+            <form method="GET" class="mb-4">
                 <div class="form-row">
-                    <div class="mb-3 col-12">
+                    <div class="mb-3 col-span-full search-models">
                         <label for="genre">Genre:</label>
                         <select id="genre" name="genre" class="form-control">
                             <option value="">Tous les genres</option>
@@ -129,7 +127,7 @@ $games = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             <?php endforeach; ?>
                         </select>
                     </div>
-                    <div class="col-12 mb-3">
+                    <div class="col-span-full mb-3 search-models">
                         <label for="platform">Plateformes:</label>
                         <select id="platform" name="platform" class="form-control">
                             <option value="">Toutes les plateformes</option>
@@ -140,18 +138,19 @@ $games = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             <?php endforeach; ?>
                         </select>
                     </div>
-                    <div class="mb-3 col-12">
+
+                    <div class="mb-3 col-span-full search-models">
                         <label for="priceRange">Prix maximum:</label>
                         <input type="range" name="max_price" id="priceRange" class="form-control-range" min="0" max="<?php echo htmlspecialchars($highestPrice); ?>" value="<?php echo htmlspecialchars($maxPrice); ?>" oninput="updatePriceLabel(this.value)">
                         <label class="color_write">Prix: <span id="priceLabel"><?php echo htmlspecialchars($maxPrice); ?></span>€</label>
-                    </div>
-                    <div class="mb-3 d-flex align-items-end">
+                    </div></div>
+                    <div class="mb-3 button_search">
                         <button type="submit" class="btn btn-primary">Rechercher</button>
                     </div>
-                </div>
+
             </form>
 
-            <div class="articles-container">
+            <div class="articles-container grid-cols-5">
                 <?php
                 if (count($games) > 0) {
                     foreach ($games as $row) {
@@ -247,7 +246,7 @@ $games = $stmt->fetchAll(PDO::FETCH_ASSOC);
             const gameId = $(this).data('game-id');
             $.ajax({
                 type: 'POST',
-                url: 'add_to_cart.php',
+                url: '../../src/controllers/add_to_cart.php',
                 data: { game_id: gameId },
                 dataType: 'json',
                 success: function(response) {

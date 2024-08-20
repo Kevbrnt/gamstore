@@ -34,3 +34,10 @@ body {
     color: white;
     font-family: "Alex Brush", sans-serif;
 }
+
+
+@media screen and (min-width: 500px) {
+    .titre h1 {
+        font-size: 6rem;
+    }
+}

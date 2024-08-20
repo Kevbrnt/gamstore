@@ -1,12 +1,4 @@
-// Fonction pour mettre à jour le nombre d'articles dans le panier
-function updateCartCount() {
-    fetch('../../count_cart_items.php')
-        .then(response => response.json())
-        .then(data => {
-            document.getElementById('cart-count').textContent = data.count;
-        })
-        .catch(error => console.error('Erreur:', error));
-}
+
 
 // Mettre à jour le nombre d'articles au chargement de la page
 window.onload = function() {

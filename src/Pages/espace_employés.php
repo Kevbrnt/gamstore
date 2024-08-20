@@ -1,11 +1,12 @@
 <?php
 
+require __DIR__ . '/../../src/utils/session_management.php';
 require __DIR__ . '/../../build/vendor/autoload.php';
 require "../../build/vendor/autoload.php";
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/../../build');
 $dotenv->load();
 
-session_start();
+
 require '../../src/models/connect_bdd.php';
 require "../../src/models/connect_bdd_mongodb.php";
 
@@ -211,6 +212,7 @@ $chartDataJSON = json_encode($chartData);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Espace Employé</title>
+    <link rel="icon" type="image/png" href="https://gamestoreprojet.fly.dev/public/asset/favicon.png">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="../../public/CSS/Gamestore.css">
@@ -219,6 +221,16 @@ $chartDataJSON = json_encode($chartData);
 <div class="content4">
     <div class="container3">
         <h1>Espace Employé</h1>
+
+        <!-- Message d'alerte -->
+        <?php if ($message): ?>
+            <div class="alert <?php echo $message_class; ?> alert-dismissible fade show mt-3" role="alert">
+                <?php echo $message; ?>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        <?php endif; ?>
 
         <button class="btn btn-success mb-3" data-toggle="modal" data-target="#commandesModal">Commandes en attente de livraison</button>
         <div class="content4">
@@ -288,7 +300,7 @@ $chartDataJSON = json_encode($chartData);
                     <?php foreach ($valid_orders as $order): ?>
                         <tr>
                             <td><?php echo htmlspecialchars($order['id']); ?></td>
-                            <td><?php echo htmlspecialchars($order['first_name']) ." ".htmlspecialchars($order['last_name']); ?></td>
+                            <td><?php echo htmlspecialchars($order['first_name']) . " " .htmlspecialchars($order['last_name']); ?></td>
                             <td><?php echo htmlspecialchars($order['created_at']); ?></td>
                             <td><?php echo htmlspecialchars($order['date_retrait']); ?></td>
                             <td><?php echo htmlspecialchars($order['total_price']); ?> €</td>
@@ -329,15 +341,7 @@ $chartDataJSON = json_encode($chartData);
     </div>
 </div>
 
-<!-- Message d'alerte -->
-<?php if ($message): ?>
-    <div class="alert <?php echo $message_class; ?> alert-dismissible fade show mt-3" role="alert">
-        <?php echo $message; ?>
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-        </button>
-    </div>
-<?php endif; ?>
+
 
 <!-- Script pour afficher les détails de la commande -->
 <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>

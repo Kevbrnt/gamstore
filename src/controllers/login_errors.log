@@ -1,0 +1,30 @@
+[2024-08-20 22:00:47] Début du traitement de login.php
+[2024-08-20 22:00:47] Fichiers requis chargés avec succès
+[2024-08-20 22:00:47] Session ID: o586cds8ucdudkahc5uqqqd235
+[2024-08-20 22:00:47] Session data: Array
+(
+    [csrf_token] => d1d8e345491997d4fe09149315e47ca61e5f84309e36b3357e1b8fe9e676357b
+)
+
+[2024-08-20 22:00:47] Cookies: Array
+(
+    [Phpstorm-c93269b1] => f1b7d038-8a86-4da4-9299-9ec7d7f0391b
+    [PHPSESSID] => o586cds8ucdudkahc5uqqqd235
+)
+
+[2024-08-20 22:00:47] Posted CSRF token: d1d8e345491997d4fe09149315e47ca61e5f84309e36b3357e1b8fe9e676357b
+[2024-08-20 22:00:47] Stored CSRF token: d1d8e345491997d4fe09149315e47ca61e5f84309e36b3357e1b8fe9e676357b
+[20-Aug-2024 22:00:47 Europe/Berlin] CSRF Verification - Session Token: d1d8e345491997d4fe09149315e47ca61e5f84309e36b3357e1b8fe9e676357b, Posted Token: d1d8e345491997d4fe09149315e47ca61e5f84309e36b3357e1b8fe9e676357b, Result: true
+[2024-08-20 22:00:47] CSRF verification passed
+[2024-08-20 22:00:47] Tentative de connexion pour l'utilisateur: Gamestore@Employés
+[2024-08-20 22:00:47] Connexion réussie pour l'utilisateur: Gamestore@Employés
+[2024-08-20 22:00:47] Session démarrée: Array
+(
+    [user_id] => 2
+    [session_id] => 6f6d8bafd6762a0e495eb243ab12437d116071932aa6c2a40712e76c868fd3df
+    [csrf_token_secret] => 435bf3dc512cf8658125375a89893c23b381c8d2625dd21e56040d3aeb4af344
+    [expiry] => 2024-08-21 00:00:47
+)
+
+[2024-08-20 22:00:47] Redirection vers: ../../src/Pages/espace_employés.php
+[2024-08-20 22:00:47] Réponse JSON envoyée: {"success":true,"message":"Connexion r\u00e9ussie.","redirect":"..\/..\/src\/Pages\/espace_employ\u00e9s.php","csrf_token":"0dffe463f4d06e628d2282c8612bbe7f6c51d8c57bdc935df820282988151a37"}

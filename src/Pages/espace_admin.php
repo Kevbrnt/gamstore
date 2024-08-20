@@ -1,13 +1,15 @@
 <?php
+require __DIR__ . '/../../src/utils/session_management.php';
 require __DIR__ . '/../../build/vendor/autoload.php';
 
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/../../build');
 $dotenv->load();
 
-session_start();
+/*
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
+*/
 
 // Connexion à MongoDB
 require '../../build/vendor/autoload.php'; // Composer autoload file
@@ -54,8 +56,8 @@ $chartDataJSON = json_encode($chartData);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Espace Administrateur</title>
+    <link rel="icon" type="image/png" href="../../public/asset/favicon.png">
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="shortcut icon" type="image/png" href="/public/asset/favicon.png"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer"/>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="../../public/CSS/Gamestore.css">
@@ -184,16 +186,18 @@ $chartDataJSON = json_encode($chartData);
                     <div class="modal-body">
                         <form id="manage-stock-form">
                             <div class="form-group">
+                                <div id="manageStockMessage" class="alert d-none mt-2"></div>
                                 <label for="game_id">Jeu</label>
                                 <select class="form-control" id="game_id" name="game_id" required></select>
                             </div>
                             <div class="form-group">
+
                                 <label for="stock_quantity">Quantité de Stock supplémentaire</label>
                                 <input type="number" class="form-control" id="stock_quantity" name="stock_quantity" placeholder="ex: 20" required>
                             </div>
                             <button type="submit" class="btn btn-primary">Mettre à Jour le Stock</button>
                         </form>
-                        <div id="manageStockMessage" class="alert d-none mt-2"></div>
+
                     </div>
                 </div>
             </div>
@@ -226,6 +230,7 @@ $chartDataJSON = json_encode($chartData);
             <div class="modal-body">
                 <form id="add-employee-form">
                     <div class="form-group">
+                        <div id="message" class="d-none"></div>
                         <label for="username">Nom d'utilisateur</label>
                         <input type="text" id="username" name="username" class="form-control" required>
                     </div>
@@ -250,7 +255,7 @@ $chartDataJSON = json_encode($chartData);
                         <input type="text" id="address" name="address" class="form-control" required>
                     </div>
                     <button type="submit" class="btn btn-primary">Ajouter</button>
-                    <div id="message" class="d-none"></div>
+
                 </form>
 
             </div>

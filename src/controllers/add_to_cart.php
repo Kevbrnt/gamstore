@@ -1,12 +1,14 @@
 <?php
 
 require __DIR__ . '/../../build/vendor/autoload.php';
+require_once __DIR__ . '/../utils/session_management.php';
 
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/../../build');
 $dotenv->load();
 
+$user_id = getUserSession();
+
 include '../../src/models/connect_bdd.php';
-session_start();
 
 // Définir l'en-tête de la réponse en JSON
 header('Content-Type: application/json');

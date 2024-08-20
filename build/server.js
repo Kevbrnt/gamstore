@@ -10,7 +10,7 @@ app.use((req, res, next) => {
 
 // Route pour exécuter le fichier PHP
 app.get('/', (req, res) => {
-    const phpScriptPath = path.join(__dirname, 'Accueil.php'); // Spécifiez le fichier PHP à exécuter
+    const phpScriptPath = path.join(__dirname, 'index.html'); // Spécifiez le fichier PHP à exécuter
     exec(`php ${phpScriptPath}`, (error, stdout, stderr) => {
         if (error) {
             console.error(`exec error: ${error}`);

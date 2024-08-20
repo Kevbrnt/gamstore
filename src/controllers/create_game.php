@@ -37,17 +37,21 @@ if (
 
         $allowedExtensions = ['jpg', 'jpeg', 'png'];
         if (in_array($fileExtension, $allowedExtensions)) {
-            $newFileName = md5(time() . $fileName) . 'TP' . $fileExtension;
-            $uploadFileDir = '../../public/asset/Jeux/';
+            $newFileName = md5(time() . $fileName) . '.' . $fileExtension;
+            $uploadFileDir = __DIR__ . '/../../public/asset/Jeux/';
             $dest_path = $uploadFileDir . $newFileName;
-            move_uploaded_file($fileTmpPath, $dest_path);
-            $image_url = '/../../public/asset/Jeux/' . $newFileName;
+            if (move_uploaded_file($fileTmpPath, $dest_path)) {
+                $image_url = '/public/asset/Jeux/' . $newFileName;
+            } else {
+                echo json_encode(['success' => false, 'message' => 'Erreur lors du déplacement du fichier.']);
+                exit;
+            }
         } else {
             echo json_encode(['success' => false, 'message' => 'Extension de fichier non autorisée.']);
             exit;
         }
     } else {
-        $image_url = '../../public/asset/Jeux/default.png'; // Image par défaut si aucune image n'est fournie
+        $image_url = '/public/asset/Jeux/default.png'; // Image par défaut si aucune image n'est fournie
     }
 
     // Préparation de la requête SQL

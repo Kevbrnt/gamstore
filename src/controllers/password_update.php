@@ -23,13 +23,20 @@ function sendEmail($to, $subject, $body, $isHtml = true) {
     $mail = new PHPMailer(true);
 
     try {
-        $mail->isSMTP();
-        $mail->Host       = 'smtp.gmail.com';
-        $mail->SMTPAuth   = true;
-        $mail->Username   = $_ENV['USERNAME_MAIL'];
-        $mail->Password   = $_ENV['PASSWORD_MAIL'];
-        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-        $mail->Port       = $_ENV['PORT_MAIL'];
+        //Configuration Sécurisé
+        $host = $_ENV['HOST_MAIL'];
+        $nameMail = $_ENV["USERNAME_MAIL"];
+        $password = $_ENV["PASSWORD_MAIL"];
+        $port = $_ENV["PORT_MAIL"];
+
+            // Configurer le serveur SMTP
+            $mail->isSMTP();
+            $mail->Host = $host ;  // Remplacez par le serveur SMTP de votre fournisseur d'email
+            $mail->SMTPAuth = true;
+            $mail->Username = $nameMail; // Remplacez par votre adresse email
+            $mail->Password = $password; // Remplacez par le mot de passe de votre adresse email
+            $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+            $mail->Port = $port;
 
         $mail->setFrom($_ENV['USERNAME_MAIL'], 'Gamestore');
         $mail->addAddress($to);

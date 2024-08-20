@@ -1,6 +1,6 @@
 <?php
-session_start();
-
+require_once __DIR__ . '/../utils/session_management.php';
+$user = getUserSession();
 require __DIR__ . '/../../build/vendor/autoload.php';
 
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/../../build');
@@ -27,10 +27,10 @@ $retails = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Accueil</title>
+    <link rel="icon" type="image/png" href="../../public/asset/favicon.png">
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://unpkg.com/@twicpics/components@latest/dist/twicpics-components.js"></script>
-    <link rel="shortcut icon" type="image/png" href="/public/asset/favicon.png"/>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer"/>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="../../public/CSS/Gamestore.css">
@@ -142,7 +142,7 @@ LIMIT 5";
             url: '../../src/utils/api.php',
             method: 'GET',
             success: function(response) {
-                console.log('Données récupérées:', response);  // Ajout de log pour vérifier la réponse
+                //console.log('Données récupérées:', response);  // Ajout de log pour vérifier la réponse
                 response.forEach(function(game) {
                     // Comparer promotion_price et price, et choisir le bon prix à afficher
                     let priceToShow;

@@ -22,6 +22,9 @@ body {
     padding: 10px;
     margin: 0;
 }
+.footer a {
+    color: orangered;
+}
 
 /* 2e plans */
 br {
@@ -71,7 +74,7 @@ a {
     background-color: mediumorchid;
     border-radius: 10px;;
 }
-.roleAdmin {
+.roleAdministrateur {
     padding: 2px;
     font-size: small;
     color: black;
@@ -120,6 +123,10 @@ background-color: yellow;
 .menuPrincipal li a:hover {
     color: white;
 }
+.select {
+    border: 2px solid Black;
+    border-radius: 10px;
+}
 
 /* register & Login */
 #username {
@@ -144,13 +151,19 @@ background-color: yellow;
     background-color: rgba(30, 144, 255, 0.8);
     color: black;
 }
-.form-group label {
+.form-group label :not(.form-check-label){
     background-color: rgba(0, 0, 0, 0.5);
     color: white;
     margin-top: 1rem;
     padding: 6px;
     text-align: center;
     width: 100%;
+}
+.text-center a {
+    color: white;
+}
+.text-center a:hover{
+    color: #007bff;
 }
 
 /* Body */
@@ -306,6 +319,17 @@ tbody tr ,td {
 .boutonInlineText {
     margin: 12px;
 }
+.button_search{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.search-models {
+display: inline-flex;
+    flex-direction: column;
+    flex: 1;
+}
+
 /* Footer */
 /* .footer {
     height: 100%;
@@ -339,7 +363,7 @@ tbody tr ,td {
     z-index: 10;
     width: 100px;  /* Taille initiale */
     height: 100px; /* Taille initiale */
-    background-image: url('/public/assetc/asset/promo.png');
+    background-image: url('../../public/asset/promo.png');
     background-size: cover;
     background-repeat: no-repeat;
     animation: pulse 2s infinite; /* Animation de l'effet de grossissement et rétrécissement */
@@ -366,8 +390,28 @@ tbody tr ,td {
     margin-bottom: 20px;
 }
 
+#order-form , #form-group h1{
+    margin: 5px;
+}
+@media screen and (max-width: 500px) {
+    .card-container {
+        display: flex;
+        flex-wrap: wrap;
+        flex-direction: column;
+        flex: 1;
+        gap: 20px;
+        margin-bottom: 20px;
+    }
+    .articles-container {
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+    }
+}
+
 .card {
     background-color: #fff;
+    margin: 10px;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     overflow: hidden;
@@ -383,11 +427,11 @@ tbody tr ,td {
 
 .card-content {
     padding: 10px;
+    margin: 10px 0;
 }
 
 .card-title {
     font-size: 1.2em;
-    margin: 10px 0;
 }
 
 .card-quantity, .card-total {
@@ -477,9 +521,6 @@ tbody tr ,td {
     }
 }
 
-.articles-container {
-    display: flex;
-}
 
 .article {
     flex: 0 1 100%;

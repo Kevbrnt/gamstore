@@ -57,17 +57,18 @@ if (
             $mail = new PHPMailer(true); // Pass true pour activer les exceptions
 
             //Configuration Sécurisé
-            $name = getenv("USERNAME_MAIL");
-            $password = getenv("PASSWORD_MAIL");
-            $port = getenv("PORT_MAIL");
+            $host = $_ENV['HOST_MAIL'];
+            $nameMail = $_ENV["USERNAME_MAIL"];
+            $password = $_ENV["PASSWORD_MAIL"];
+            $port = $_ENV["PORT_MAIL"];
 
             try {
-                // Paramètres du serveur
+                // Configurer le serveur SMTP
                 $mail->isSMTP();
-                $mail->Host = 'smtp.gmail.com';  // Remplacez par le serveur SMTP de votre choix
+                $mail->Host = $host ;  // Remplacez par le serveur SMTP de votre fournisseur d'email
                 $mail->SMTPAuth = true;
-                $mail->Username   = $name; // Votre adresse e-mail
-                $mail->Password   = $password; // Votre mot de passe
+                $mail->Username = $nameMail; // Remplacez par votre adresse email
+                $mail->Password = $password; // Remplacez par le mot de passe de votre adresse email
                 $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
                 $mail->Port = $port;
 

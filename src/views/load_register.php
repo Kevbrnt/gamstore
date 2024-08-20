@@ -1,5 +1,6 @@
 <?php
 
+require  __DIR__ . '/../../src/utils/session_management.php';
 require __DIR__ . '/../../build/vendor/autoload.php';
 require "../../build/vendor/autoload.php";
 $dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/../../build');
@@ -46,14 +47,15 @@ if ($success) {
     $mail = new PHPMailer(true); // Instancier PHPMailer
 
     //Configuration Sécurisé
-    $nameMail = getenv("USERNAME_MAIL");
-    $password = getenv("PASSWORD_MAIL");
-    $port = getenv("PORT_MAIL");
+    $host = $_ENV['HOST_MAIL'];
+    $nameMail = $_ENV["USERNAME_MAIL"];
+    $password = $_ENV["PASSWORD_MAIL"];
+    $port = $_ENV["PORT_MAIL"];
 
     try {
         // Configurer le serveur SMTP
         $mail->isSMTP();
-        $mail->Host = 'smtp.gmail.com';  // Remplacez par le serveur SMTP de votre fournisseur d'email
+        $mail->Host = $host ;  // Remplacez par le serveur SMTP de votre fournisseur d'email
         $mail->SMTPAuth = true;
         $mail->Username = $nameMail; // Remplacez par votre adresse email
         $mail->Password = $password; // Remplacez par le mot de passe de votre adresse email

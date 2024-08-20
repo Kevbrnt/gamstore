@@ -1,13 +1,55 @@
+# Activer le moteur de réécriture
 RewriteEngine On
 RewriteBase /
 
-# Rediriger la racine vers Accueil.php
-RewriteRule ^$ index.php [L]
+# Autoriser l'accès direct aux ressources statiques
+RewriteRule ^(public/CSS|public/JS|public/asset|public/assets)/ - [L]
 
-# Si le fichier ou le répertoire n'existe pas, redirigez vers le contrôleur approprié
+# Rediriger la racine vers index.html
+RewriteRule ^$ index.html [L]
+
+# Autoriser l'accès direct à password_change.php
+RewriteRule ^password_change\.php$ src/Pages/password_change.php [L]
+
+# Rediriger les URLs simplifiées vers les contrôleurs
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^([^/]+)\.php$ src/Pages/$1.php [L]
+
+# Rediriger les URLs sans .php vers les contrôleurs
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^([^/]+)/?$ src/Pages/$1.php [L]
+
+# Si le fichier ou le répertoire demandé existe, ne rien faire
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+# Rediriger les requêtes vers les contrôleurs appropriés (structure existante)
 RewriteRule ^([^/]+)/?$ src/controllers/$1.php [L]
 
-# Empêcher l'accès direct aux fichiers .php dans les dossiers src et config
+# Empêcher l'accès direct aux fichiers .php dans les dossiers src et config, sauf pour password_change.php
+RewriteCond %{REQUEST_URI} !^/src/Pages/password_change\.php
 RewriteRule ^(src|config)/ - [F]
+
+# Empêcher l'affichage du contenu des répertoires
+Options -Indexes
+
+# Protéger les fichiers .htaccess et .env
+<FilesMatch "^\.htaccess|\.env">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+
+# Définir les types MIME pour les fichiers courants
+AddType text/css .css
+AddType text/javascript .js
+AddType image/jpeg .jpg .jpeg
+AddType image/png .png
+AddType image/gif .gif
+
+# Compresser les fichiers texte
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript application/javascript
+</IfModule>

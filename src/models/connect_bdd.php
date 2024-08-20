@@ -30,41 +30,4 @@ try {
     echo "Code d'erreur : " . $e->getCode() . "\n";
     echo "Trace de la pile : \n" . $e->getTraceAsString();
 }
-
-function cleanUrl($url) {
-    $url = strtok($url, '?'); // Retire les paramètres GET
-    $url = rtrim($url, '/'); // Retire le slash final s'il existe
-    return $url;
-}
-
-$request = cleanUrl($_SERVER['REQUEST_URI']);
-
-switch ($request) {
-    case '':
-    case '/':
-    case '/Accueil.php':
-        require __DIR__ . '/../controllers/Accueil.php';
-        break;
-    case '/Boutique':
-        require __DIR__ . '/../controllers/games.php';
-        break;
-    case '/Inscription':
-        require __DIR__ . '/../controllers/register.php';
-        break;
-    case '/Connexion':
-        require __DIR__ . '/../controllers/login.php';
-        break;
-    case '/Espace Administrateur':
-        require __DIR__ . '/../controllers/espace_admin.php';
-        break;
-    case '/Espace Utilisateur':
-        require __DIR__ . '/../controllers/espace.php';
-        break;
-    case '/Espace Employé':
-        require __DIR__ . '/../controllers/espace_employés.php';
-        break;
-    case '/Panier':
-        require __DIR__ . '/../controllers/cart.php';
-        break;
-}
 ?>
