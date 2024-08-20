@@ -20,7 +20,7 @@ GameStore est une application web de vente de jeux vidéo développée dans le c
 
 ## Prérequis
 
-- PHP 8.2 ou supérieur
+- PHP 8.3 ou supérieur
 - PostgreSQL 16 (gérer par Supabase)
 - MongoDB 4.4 ou supérieur (gérer par MongoDB Compass)
 - Composer
@@ -39,7 +39,7 @@ composer install
 données dans les dossiers:
 5. Configurez PostgresSQL :
  - Créer une base de données nommée `gamestoretp`
- - Créer les tables indiquez dans le dossier diagramme BDD
+ - Créer les tables indiquez dans le dossier /build/diagramme BDD
 
 5. Configurez MongoDB :
 - Créez une base de données nommée `Gamestore`
@@ -47,7 +47,7 @@ données dans les dossiers:
 
 ## Configuration
 
-1. copier et Modifiez `connect_bdd.php` pour MySql et `connect_bdd_mongo.php` pour MongoDB avec vos paramètres de base de données et autres configurations.
+1. copier et Modifiez `/build/.env` pour MySql et MongoDB avec vos paramètres de base de données et autres configurations.
 
 ## Utilisation
 
@@ -72,7 +72,7 @@ données dans les dossiers:
  - Trellio => https://trello.com/invite/b/6671ad7bc622a55b92f0b37f/ATTI3db01a8a63bf400c24c3ce8bc1135a53437571CB/mon-tp
  - draw.io => dans `main` / dossier Diagramme BDD
  - Figma => https://www.figma.com/community/file/1397506796091956804/tp-gamestore
-   
+
 ## Workflow Git
 
 Nous suivons un workflow Git basé sur deux branches principales :
@@ -81,26 +81,37 @@ Nous suivons un workflow Git basé sur deux branches principales :
 2. `develop` : Branche de développement
 
 ## Structure du Projet
+
 master/
 │
-├── .github/        
-├── asset/              
-├── assets/
-├── CSS/
-├── JS/
-├── Mongodb/
-├── Mysql/
-├── node_modules/
-├── src/               # Code source PHP
-├── vendor/            # Dépendances (géré par Composer)
-├── .gitignore
-├── composer.json
-├── fichiers php
-└── README.md
+├── .github\
+│   └── workflows\
+├── build\
+│   ├── node_modules\
+│   └── vendor\
+├── config\
+├── database\
+│   ├── MongoDB\
+│   └── MySql\
+├── public\
+│   ├── asset\
+│   ├── assets\
+│   ├── CSS\
+│   └── JS\
+├── src\
+│   ├── controllers\
+│   ├── models\
+│   ├── utils\
+│   └── views\
+│
+├── .htaccess
+├── fly.toml
+└── Index.html
+
 
 ## Technologies Utilisées
 
-- PHP 8.2
+- PHP 8.3
 - PostgreSQL (gérer par Supabase)
 - MongoDB (gérer par MongoDB Compass)
 - HTML5/CSS3
